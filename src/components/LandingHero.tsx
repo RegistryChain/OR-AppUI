@@ -50,10 +50,12 @@ export const LandingHero = () => {
       let up = await contract.balanceOf([walletAddress, 1]) as any;
 
       if (checkedItem) {
+        // @ts-ignore
         up = up * 2n;
       }
 
       if (checkedItem2) {
+        // @ts-ignore
         up = up * 2n;
       }
 
