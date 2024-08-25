@@ -3,11 +3,6 @@
 import {
   VStack,
   Divider,
-  Box,
-  Image,
-  GridItem,
-  SimpleGrid,
-  Button,
 } from "@chakra-ui/react";
 
 import { NavBar } from "../components/NavBar";

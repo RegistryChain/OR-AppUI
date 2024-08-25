@@ -1,13 +1,5 @@
 import {
   Chain,
-  arbitrum,
-  base,
-  bsc,
-  mainnet,
-  optimism,
-  polygon,
-  baseSepolia,
-  sepolia,
   polygonAmoy,
 } from "wagmi/chains";
 import { defaultWagmiConfig } from "@web3modal/wagmi";
