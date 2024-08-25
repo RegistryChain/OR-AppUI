@@ -19,6 +19,7 @@ import { isAddress } from "viem";
 import { motion } from "framer-motion";
 import { useWallet } from "@/context/WalletContext"; // Adjust the import path
 import useReadOnlySBTContract from "@/contracts/useReadOnlySBTContract";
+import { useCheckbox } from "@/context/CheckboxContext";
 
 export const LandingHero = () => {
   const contract = useReadOnlySBTContract();
@@ -27,6 +28,8 @@ export const LandingHero = () => {
   const [downVotes, setDownVotes] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const { checkedItem, checkedItem2 } = useCheckbox();
 
   const handleCheck = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -43,8 +46,16 @@ export const LandingHero = () => {
 
     try {
       // Fetch the data from the contract
-      const down = await contract.balanceOf([walletAddress, 0]) as any;
-      const up = await contract.balanceOf([walletAddress, 1]) as any;
+      let down = await contract.balanceOf([walletAddress, 0]) as any;
+      let up = await contract.balanceOf([walletAddress, 1]) as any;
+
+      if (checkedItem) {
+        up = up * 2n;
+      }
+
+      if (checkedItem2) {
+        up = up * 2n;
+      }
 
       setUpVotes(up);
       setDownVotes(down);

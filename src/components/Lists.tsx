@@ -12,13 +12,15 @@ import React, { useEffect } from "react";
 import axios from "axios";
 import { useWallet } from "@/context/WalletContext";
 import { isAddress } from "viem";
+import { useCheckbox } from "@/context/CheckboxContext";
 
 export const Lists = () => {
   const [checkedItems1, setCheckedItems1] = React.useState([false, false, false, false, false]);
   const [checkedItems2, setCheckedItems2] = React.useState([false, false, false, false, false, false]);
-
   const [checkedItems, setCheckedItems] = React.useState([false, false, false, false, false]);
   const { walletAddress } = useWallet();
+
+  const { checkedItem, setCheckedItem, checkedItem2, setCheckedItem2 } = useCheckbox();
 
   const allChecked = checkedItems.every(Boolean);
   const isIndeterminate = checkedItems.some(Boolean) && !allChecked;
@@ -63,8 +65,8 @@ export const Lists = () => {
               onChange={(selected) => console.log(selected)}
             >
               <Checkbox
-                isChecked={checkedItems1[0]}
-                onChange={(e) => setCheckedItems1([e.target.checked, ...checkedItems1.slice(1)])}
+                isChecked={checkedItem}
+                onChange={(e) => setCheckedItem(e.target.checked)}
               >
                 WorldCoin ID
               </Checkbox>
@@ -85,7 +87,7 @@ export const Lists = () => {
                 onChange={(e) => setCheckedItems1([checkedItems1[0], checkedItems1[1], checkedItems1[2], e.target.checked, ...checkedItems1.slice(4)])}
               >
                 Coinbase KYC
-                </Checkbox>
+              </Checkbox>
             </CheckboxGroup>
           </Stack>
         </GridItem>
@@ -103,14 +105,12 @@ export const Lists = () => {
               5 NFT
             </Checkbox>
             <Checkbox
-              isChecked={checkedItems2[1]}
-              onChange={(e) => setCheckedItems2([checkedItems2[0], e.target.checked, ...checkedItems2.slice(2)])}
             >
               100 transactions
             </Checkbox>
             <Checkbox
-              isChecked={checkedItems2[2]}
-              onChange={(e) => setCheckedItems2([checkedItems2[0], checkedItems2[1], e.target.checked, ...checkedItems2.slice(3)])}
+              isChecked={checkedItem2}
+              onChange={(e) => setCheckedItem2(e.target.checked)}
             >
               0.25 ETH on gas
             </Checkbox>

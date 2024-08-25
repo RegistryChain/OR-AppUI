@@ -6,6 +6,7 @@ import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { wagmiConfig } from "../wagmi";
 import { WalletProvider } from "@/context/WalletContext";
+import { CheckboxProvider } from "@/context/CheckboxContext";
 
 const queryClient = new QueryClient();
 
@@ -33,7 +34,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <WagmiProvider config={wagmiConfig as any}>
         <QueryClientProvider client={queryClient}>
           <WalletProvider>
-            {mounted && children}
+            <CheckboxProvider>
+              {mounted && children}
+            </CheckboxProvider>
           </WalletProvider>
         </QueryClientProvider>
       </WagmiProvider>
