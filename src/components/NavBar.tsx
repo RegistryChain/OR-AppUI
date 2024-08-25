@@ -45,7 +45,7 @@ export const NavBar = () => {
               type: 'ERC20',
               options: {
                 address: config.SHITTY_COPPER_CONTRACT,
-                symbol: 'SCP',
+                symbol: 'DOWNTHUMB',
                 decimals: 18,
                 image: 'https://bafkreig5jsygnxekfhdjsp6qw3uoag2rxg4khnnfc2h4pvx47dczmbg2pm.ipfs.w3s.link/',
               },
@@ -59,7 +59,7 @@ export const NavBar = () => {
               type: 'ERC20',
               options: {
                 address: config.FINE_COPPER_CONTRACT,
-                symbol: 'FCP',
+                symbol: 'UPTHUMB',
                 decimals: 18,
                 image: 'https://bafkreic5b7p2obdpzdho22h2wzvvukjpfxdk3uk3viat6nescsxlj5d45y.ipfs.w3s.link/',
               },

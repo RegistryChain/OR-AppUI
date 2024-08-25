@@ -1,4 +1,3 @@
-import useReadOnlySBTContract from "@/contracts/useReadOnlySBTContract";
 import {
   Heading,
   Stack,
@@ -18,10 +17,12 @@ import {
 import { useState } from "react";
 import { isAddress } from "viem";
 import { motion } from "framer-motion";
+import { useWallet } from "@/context/WalletContext"; // Adjust the import path
+import useReadOnlySBTContract from "@/contracts/useReadOnlySBTContract";
 
 export const LandingHero = () => {
   const contract = useReadOnlySBTContract();
-  const [walletAddress, setWalletAddress] = useState('');
+  const { walletAddress, setWalletAddress } = useWallet();
   const [upVotes, setUpVotes] = useState(0);
   const [downVotes, setDownVotes] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +40,6 @@ export const LandingHero = () => {
       setIsLoading(false);
       return;
     }
-
 
     try {
       // Fetch the data from the contract
@@ -131,7 +131,7 @@ export const LandingHero = () => {
       )}
 
       {isLoading && (
-        <Box textAlign="center" mb={0}>
+        <Box textAlign="center" mb={1}>
           <Spinner size="xl" />
         </Box>
       )}
