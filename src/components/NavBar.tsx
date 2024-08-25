@@ -13,6 +13,7 @@ import { createWeb3Modal } from "@web3modal/wagmi/react";
 import { projectId, wagmiConfig } from "@/wagmi";
 import { config } from "@/config";
 import { useWatchAsset } from "wagmi";
+import Link from "next/link";
 
 createWeb3Modal({
   wagmiConfig: wagmiConfig as any,
@@ -31,6 +32,15 @@ export const NavBar = () => {
             <a href="">{CONSTANTS.AppUI_SYMBOL}</a>
           </Heading>
         </Box>
+        <Link href="/dashboard">
+          <Button
+            ml={10}
+            // @ts-ignore
+            icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
+          >
+            Dashboard
+          </Button>
+        </Link>
         <Spacer />
         <Flex direction={"row"}>
           <IconButton

@@ -32,8 +32,8 @@ export const AlephBoxs = () => {
     const fetchVotes = async () => {
       try {
         if (isAddress(info.EOA)) {
-          const up = await contract.balanceOf([info.EOA, 0]) as any;
-          const down = await contract.balanceOf([info.EOA, 1]) as any;
+          const up = await contract.balanceOf([info.EOA, 1]) as any;
+          const down = await contract.balanceOf([info.EOA, 0]) as any;
           setUpVotes(up);
           setDownVotes(down);
         }
@@ -114,39 +114,39 @@ export const AlephBoxs = () => {
           </Box>
 
           <Box display='flex' mt='2' alignItems='center'>
-            {/* <Badge borderRadius='full' px='2' mr={5} colorScheme='teal'>
+            <Badge borderRadius='full' px='2' mr={5} colorScheme='teal'>
               Live
-            </Badge> */}
+            </Badge>
 
-            <Input
+            {/* <Input
               type="number"
               value={upVoteAmount}
               onChange={(e) => setUpVoteAmount(Number(e.target.value))}
               width="60px"
               textColor={"white"}
               mr={2}
-            />
+            /> */}
 
-            <Button px={1} onClick={(e) => handleVote(e, 1)}>
+            <Button px={1} disabled>
               <Image
                 src="https://bafkreic5b7p2obdpzdho22h2wzvvukjpfxdk3uk3viat6nescsxlj5d45y.ipfs.w3s.link/"
                 alt="Upvote Image"
                 boxSize="20px"
               />
             </Button>
-            <Text fontSize="2xl" fontWeight="bold" color={"green.500"} ml={2} mr={3}>
+            <Text fontSize="2xl" fontWeight="bold" color={"green.500"} ml={2} mr={6}>
               {upVotes !== null ? Number(upVotes) : "..."}
             </Text>
 
-            <Input
+            {/* <Input
               type="number"
               value={downVoteAmount}
               onChange={(e) => setDownVoteAmount(Number(e.target.value))}
               width="60px"
               mr={2}
-            />
+            /> */}
 
-            <Button px={1} onClick={(e) => handleVote(e, 0)}>
+            <Button px={1} disabled>
               <Image
                 src="https://bafkreig5jsygnxekfhdjsp6qw3uoag2rxg4khnnfc2h4pvx47dczmbg2pm.ipfs.w3s.link/"
                 alt="Downvote Image"
