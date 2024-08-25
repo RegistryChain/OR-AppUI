@@ -8,6 +8,7 @@ import {
   polygon,
   baseSepolia,
   sepolia,
+  polygonAmoy,
 } from "wagmi/chains";
 import { defaultWagmiConfig } from "@web3modal/wagmi";
 
@@ -22,15 +23,7 @@ const metadata = {
 };
 
 export const chains: [Chain, ...Chain[]] = [
-  mainnet,
-  polygon,
-  base,
-  bsc,
-  polygon,
-  arbitrum,
-  optimism,
-  baseSepolia,
-  sepolia,
+  polygonAmoy,
 ];
 
 export const wagmiConfig = defaultWagmiConfig({
