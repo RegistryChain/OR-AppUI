@@ -48,7 +48,7 @@ export const LandingHero = () => {
       // Fetch the data from the contract
       let down = await contract.balanceOf([walletAddress, 0]) as any;
       let up = await contract.balanceOf([walletAddress, 1]) as any;
-
+      // IMPORTANT
       if (checkedItem) {
         // @ts-ignore
         up = up * 2n;
@@ -56,7 +56,7 @@ export const LandingHero = () => {
 
       if (checkedItem2) {
         // @ts-ignore
-        up = up * 2n;
+        down = down * 20n;
       }
 
       setUpVotes(up);
@@ -76,9 +76,9 @@ export const LandingHero = () => {
       w={{ base: "full", md: 11 / 12, xl: 9 / 12 }}
       spacing={{ base: "4", lg: "8" }}
     >
-      <Heading
+        <Heading
         mb={6}
-        fontSize={{ base: "4xl", md: "6xl", lg: "7xl" }}
+        fontSize={{ base: "5xl", md: "7xl", lg: "8xl" }}
         fontWeight="bold"
         lineHeight="none"
         textAlign="center"
@@ -95,7 +95,29 @@ export const LandingHero = () => {
           bgGradient="linear(to-r, orange.400,blue.500)"
           fontWeight="extrabold"
         >
-          On-Chain Reputation
+          OR
+        </Text>
+      </Heading>
+      <Heading
+        mb={6}
+        fontSize={{ base: "2xl", md: "3xl", lg: "4xl" }}
+        fontWeight="bold"
+        lineHeight="none"
+        textAlign="center"
+        letterSpacing={{ base: "normal", md: "tight" }}
+        color="gray.900"
+        _dark={{
+          color: "gray.100",
+        }}
+      >
+        <Text
+          display="inline"
+          w="full"
+          bgClip="text"
+          bgGradient="linear(to-r, orange.400,blue.500)"
+          fontWeight="extrabold"
+        >
+          Onchain Reputation
         </Text>
       </Heading>
 
@@ -131,7 +153,7 @@ export const LandingHero = () => {
           >
             <HStack>
               <Image
-                src="https://bafkreig5jsygnxekfhdjsp6qw3uoag2rxg4khnnfc2h4pvx47dczmbg2pm.ipfs.w3s.link/"
+                src="https://images.emojiterra.com/google/noto-emoji/unicode-15/color/512px/1f44e.png"
                 alt="Downvote Image"
                 boxSize="40px"
               />

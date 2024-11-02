@@ -29,6 +29,7 @@ export const Lists = () => {
   const textColor = useColorModeValue("gray.900", "white");
 
   useEffect(() => {
+    console.log('sub', checkedItems)
     if (checkedItems[0] && walletAddress && isAddress(walletAddress)) {
       const fetchNFTs = async () => {
         try {
@@ -42,6 +43,8 @@ export const Lists = () => {
       fetchNFTs();
     }
   }, [checkedItems[0], walletAddress]);
+
+  
 
   return (
     <Box p={6} bg={bg} borderRadius="lg" boxShadow="lg">
@@ -68,13 +71,13 @@ export const Lists = () => {
                 isChecked={checkedItem}
                 onChange={(e) => setCheckedItem(e.target.checked)}
               >
-                WorldCoin ID
+                Gitcoin Passport
               </Checkbox>
               <Checkbox
                 isChecked={checkedItems1[1]}
                 onChange={(e) => setCheckedItems1([checkedItems1[0], e.target.checked, ...checkedItems1.slice(2)])}
               >
-                Gitcoin Passport
+                WorldCoin ID
               </Checkbox>
               <Checkbox
                 isChecked={checkedItems1[2]}
@@ -105,12 +108,15 @@ export const Lists = () => {
               5 NFT
             </Checkbox>
             <Checkbox
+            isChecked={checkedItems2[1]}
+            onChange={(e) => setCheckedItems2([checkedItems2[0], e.target.checked, checkedItems2[2], checkedItems2[3], ...checkedItems2.slice(4)])}
+
             >
               100 transactions
             </Checkbox>
             <Checkbox
-              isChecked={checkedItem2}
-              onChange={(e) => setCheckedItem2(e.target.checked)}
+              isChecked={checkedItems2[2]}
+              onChange={(e) => setCheckedItems2([checkedItems2[0], checkedItems2[1], e.target.checked, checkedItems2[3], ...checkedItems2.slice(4)])}
             >
               0.25 ETH on gas
             </Checkbox>
@@ -137,7 +143,7 @@ export const Lists = () => {
           <Checkbox
             isChecked={allChecked}
             isIndeterminate={isIndeterminate}
-            onChange={(e) =>
+            onChange={(e) =>{
               setCheckedItems([
                 e.target.checked,
                 e.target.checked,
@@ -145,6 +151,9 @@ export const Lists = () => {
                 e.target.checked,
                 e.target.checked,
               ])
+              setCheckedItem2(e.target.checked)
+
+            }
             }
           >
             Select All
@@ -153,7 +162,7 @@ export const Lists = () => {
             <Checkbox
               isChecked={checkedItems[1]}
               onChange={(e) =>
-                setCheckedItems([checkedItems[0], e.target.checked, checkedItems[2], checkedItems[3], checkedItems[4]])
+                setCheckedItems([checkedItems[0], checkedItems[1], checkedItems[2], checkedItems[3], checkedItems[4]])
               }
             >
               CryptoPunks

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 
 // Define the context
@@ -8,7 +8,14 @@ const CheckboxContext = createContext<any | undefined>(undefined);
 export const CheckboxProvider = ({ children }: any) => {
   const [checkedItem, setCheckedItem] = useState(false);
   const [checkedItem2, setCheckedItem2] = useState(false);
+  useEffect(() => {
+    console.log(1, checkedItem)
+  }, [checkedItem])
 
+  useEffect(() => {
+    console.log(2,'k', checkedItem2)
+  }, [checkedItem2])
+  
   return (
     <CheckboxContext.Provider value={{ checkedItem, setCheckedItem, checkedItem2, setCheckedItem2 }}>
       {children}

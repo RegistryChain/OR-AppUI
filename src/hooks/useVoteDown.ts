@@ -1,7 +1,7 @@
 import { writeContract } from '@wagmi/core';
 import { config } from '@/config';
 import { useMutation } from '@tanstack/react-query';
-import ShittyCopper from '@/abis/ShittyCopper.json';
+import Downvote from '@/abis/Downvote.json';
 import { wagmiConfig } from '@/wagmi';
 
 const useVoteDown = (onError?: any) => {
@@ -9,8 +9,8 @@ const useVoteDown = (onError?: any) => {
     {
       mutationFn: async ({ to, value }: any) => {
         return await writeContract(wagmiConfig, {
-          address: config.SHITTY_COPPER_CONTRACT,
-          abi: ShittyCopper,
+          address: config.OR_CONTRACT,
+          abi: Downvote,
           functionName: 'transfer',
           args: [to, value]
         });

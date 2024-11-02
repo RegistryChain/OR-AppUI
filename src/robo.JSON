@@ -1,0 +1,73 @@
+{
+    "humanoid_id": "TESLAOPTIMUS001.Tesla.US.Registry",
+    "attributes": {
+      "max_allowed_force": {
+        "transient": {
+          "head": 45,
+          "torso": 90,
+          "limbs": 130
+        },
+        "quasi_static": {
+          "head": 25,
+          "torso": 70,
+          "limbs": 100
+        },
+        "unit": "Newtons"
+      },
+      "privacy_policy": {
+        "data_collection": {
+          "audio_recording": false,
+          "video_capture": true,
+          "environmental_sensors": true
+        },
+        "data_access": [
+          "Tesla",
+          "owner"
+        ],
+        "storage_duration": "7 days",
+        "data_encryption": true
+      },
+      "emergency_stop": {
+        "available": true,
+        "activation_time": "0.3 seconds",
+        "voice_command_enabled": true,
+        "remote_accessible": true
+      },
+      "operating_speed": {
+        "max_walk_speed": "1.5 m/s",
+        "max_run_speed": "4 m/s",
+        "motion_types": [
+          "walking",
+          "running",
+          "lifting",
+          "gripping"
+        ]
+      },
+      "collision_detection": {
+        "sensors": [
+          "LIDAR",
+          "camera-based AI",
+          "ultrasonic"
+        ],
+        "avoidance_algorithm": "Tesla AI Neural Network"
+      },
+      "proximity_detection_range": {
+        "min_safe_distance": "0.6 meters",
+        "detection_radius": "360 degrees"
+      },
+      "strength_limitations": {
+        "max_lift_weight": "15 kg",
+        "max_push_force": "180 Newtons"
+      },
+      "safety_certifications": [
+        "ISO/TS 15066",
+        "Tesla Safety Standard V2"
+      ],
+      "capabilities": {
+        "object_recognition": true,
+        "voice_recognition": true,
+        "gesture_control": true,
+        "self-calibration": true
+      }
+    }
+  }

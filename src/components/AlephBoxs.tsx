@@ -28,7 +28,6 @@ export const AlephBoxs = () => {
     const [downVotes, setDownVotes] = useState<number | null>(null);
     const [upVoteAmount, setUpVoteAmount] = useState(1); // Separate state for upvote amount
     const [downVoteAmount, setDownVoteAmount] = useState(1); // Separate state for downvote amount
-
     const fetchVotes = async () => {
       try {
         if (isAddress(info.EOA)) {

@@ -28,8 +28,10 @@ export const NavBar = () => {
     <Box p={4} h="40px">
       <Flex>
         <Box>
-          <Heading size={"lg"}>
-            <a href="">{CONSTANTS.AppUI_SYMBOL}</a>
+          <Heading                 
+            bgClip="text"
+            bgGradient="linear(to-r, orange.400,blue.500)">
+            OR
           </Heading>
         </Box>
         <Link href="/dashboard">
@@ -54,10 +56,10 @@ export const NavBar = () => {
             onClick={() => watchAsset({
               type: 'ERC20',
               options: {
-                address: config.SHITTY_COPPER_CONTRACT,
+                address: config.OR_CONTRACT,
                 symbol: 'DOWNTHUMB',
                 decimals: 18,
-                image: 'https://bafkreig5jsygnxekfhdjsp6qw3uoag2rxg4khnnfc2h4pvx47dczmbg2pm.ipfs.w3s.link/',
+                image: 'https://images.emojiterra.com/google/noto-emoji/unicode-15/color/512px/1f44e.png',
               },
             })}
           >

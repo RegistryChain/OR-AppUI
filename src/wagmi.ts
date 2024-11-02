@@ -7,10 +7,10 @@ import { defaultWagmiConfig } from "@web3modal/wagmi";
 export const projectId = "98a6b35be61a0b8ea94049ac1def8a8c";
 
 const metadata = {
-  name: "ShittyCopper",
-  description: "ShittyCopper UI",
-  url: "https://ShittyCopper.com",
-  verifyUrl: "https://ShittyCopper.com",
+  name: "Onchain Reputation",
+  description: "Onchain Reputation UI",
+  url: "https://onchain-reputation.com",
+  verifyUrl: "https://onchain-reputation.com",
   icons: ["https://avatars.githubusercontent.com/u/37784886"],
 };
 

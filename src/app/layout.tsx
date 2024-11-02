@@ -1,7 +1,7 @@
 import { Providers } from "./providers";
 
 export const metadata = {
-  title: "ShittyCopper - OnChain Reputation System",
+  title: "OR - Onchain Reputation",
 };
 
 export default function RootLayout({

@@ -5,7 +5,7 @@ export const CONSTANTS = {
     AppUI_DEMO: "#",
     AppUI_WHITELIST: "#",
     AppUI_URL: "https://shittycopper.com/",
-    AppUI_NAME: "ShittyCopper",
+    AppUI_NAME: "Onchain Registration",
     AppUI_SYMBOL: "💩",
   
     AUTHOR_EMAIL: "h@supercontinet.com",
