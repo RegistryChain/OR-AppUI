@@ -60,7 +60,7 @@ const Footer = () => {
         </Flex>
 
       <Flex mx="-2">
-      <Link>
+      <Link href={CONSTANTS.AppCONTRACTS_GITHUB} isExternal rel="noopener noreferrer">
         <Icon
         color="gray.800"
         _dark={{ color: "white" }}
@@ -70,7 +70,7 @@ const Footer = () => {
         as={FiGithub}
         />
       </Link>
-      <Link>
+      <Link  href={CONSTANTS.AppUI_TWITTER} isExternal rel="noopener noreferrer">
         <Icon
         color="gray.800"
         _dark={{ color: "white" }}

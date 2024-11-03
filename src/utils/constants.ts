@@ -1,12 +1,10 @@
 export const CONSTANTS = {
-    AppUI_TWITTER: "https://twitter.com/#",
+    AppUI_TWITTER: "https://x.com/RegistryChain",
     AppUI_DISCORD: "https://discord.gg/#",
-    AppUI_GITHUB: "#",
     AppUI_DEMO: "#",
     AppUI_WHITELIST: "#",
     AppUI_URL: "https://shittycopper.com/",
     AppUI_NAME: "Onchain Registration",
-    AppUI_SYMBOL: "💩",
-  
+    AppCONTRACTS_GITHUB: "https://github.com/RegistryChain/OR-contracts",
     AUTHOR_EMAIL: "h@supercontinet.com",
   };

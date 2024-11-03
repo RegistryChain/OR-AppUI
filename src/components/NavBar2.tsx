@@ -24,7 +24,7 @@ export const NavBar2 = () => {
       <Flex>
         <Box>
           <Heading size={"lg"}>
-            <a href="/">{CONSTANTS.AppUI_SYMBOL}</a>
+            
           </Heading>
         </Box>
         <Spacer />
