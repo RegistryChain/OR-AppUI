@@ -14,16 +14,18 @@ import {
   HStack,
   Image,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { isAddress } from "viem";
 import { motion } from "framer-motion";
 import { useWallet } from "@/context/WalletContext"; // Adjust the import path
 import useReadOnlySBTContract from "@/contracts/useReadOnlySBTContract";
 import { useCheckbox } from "@/context/CheckboxContext";
+import {gitcoinPassportScore, etherscanData, binanceAttestation} from "./FetchAddressData"
 
 export const LandingHero = () => {
   const contract = useReadOnlySBTContract();
   const { walletAddress, setWalletAddress } = useWallet();
+  const [addressData, setAddressData] = useState({});
   const [upVotes, setUpVotes] = useState(0);
   const [downVotes, setDownVotes] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +35,7 @@ export const LandingHero = () => {
 
   const handleCheck = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    setAddressData({})
     setIsLoading(true);
     setError('');
 
@@ -46,6 +48,10 @@ export const LandingHero = () => {
 
     try {
       // Fetch the data from the contract
+      await etherscanData(walletAddress, setAddressData)
+      await binanceAttestation(walletAddress, setAddressData)
+      await gitcoinPassportScore(walletAddress, setAddressData)
+      
       let down = await contract.balanceOf([walletAddress, 0]) as any;
       let up = await contract.balanceOf([walletAddress, 1]) as any;
       // IMPORTANT
@@ -67,6 +73,10 @@ export const LandingHero = () => {
 
     setIsLoading(false);
   };
+
+  useEffect(() => {
+    console.log(addressData)
+  }, [addressData])
 
   return (
     <Stack
