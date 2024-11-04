@@ -1,0 +1,9 @@
+[
+  {
+    "inputs": [],
+    "name": "mintFromFaucet",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

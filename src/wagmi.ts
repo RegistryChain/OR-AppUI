@@ -1,6 +1,6 @@
 import {
   Chain,
-  polygonAmoy,
+  sepolia,
 } from "wagmi/chains";
 import { defaultWagmiConfig } from "@web3modal/wagmi";
 
@@ -15,7 +15,7 @@ const metadata = {
 };
 
 export const chains: [Chain, ...Chain[]] = [
-  polygonAmoy,
+  sepolia,
 ];
 
 export const wagmiConfig = defaultWagmiConfig({

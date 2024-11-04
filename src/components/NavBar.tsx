@@ -14,6 +14,7 @@ import { projectId, wagmiConfig } from "@/wagmi";
 import { config } from "@/config";
 import { useWatchAsset } from "wagmi";
 import Link from "next/link";
+import useMintBasic from "../hooks/useMintBasic";
 
 createWeb3Modal({
   wagmiConfig: wagmiConfig as any,
@@ -23,6 +24,9 @@ createWeb3Modal({
 export const NavBar = () => {
   const { toggleColorMode, colorMode } = useColorMode();
   const { watchAsset } = useWatchAsset();
+  const { mutateAsync: faucetMint } = useMintBasic();
+
+  
 
   return (
     <Box p={4} h="40px">
@@ -78,6 +82,12 @@ export const NavBar = () => {
             })}
           >
             Add UPTHUMB
+          </Button>
+          <Button
+            mr={5}
+            onClick={() => faucetMint([])}
+          >
+            Mint Test Tokens
           </Button>
           <Box>
             <w3m-button />

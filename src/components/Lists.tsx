@@ -32,7 +32,7 @@ export const Lists = () => {
     if (checkedItems[0] && walletAddress && isAddress(walletAddress)) {
       const fetchNFTs = async () => {
         try {
-          const response = await axios.get(`https://api.opensea.io/api/v2/chain/amoy/account/${walletAddress}/nfts`);
+          const response = await axios.get(`https://api.opensea.io/api/v2/chain/sepolia/account/${walletAddress}/nfts`);
           console.log("NFT Data: ", response.data);
         } catch (error) {
           console.error("Error fetching NFT data: ", error);

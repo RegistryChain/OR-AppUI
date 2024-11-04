@@ -13,7 +13,7 @@ export const CheckboxProvider = ({ children }: any) => {
   }, [checkedItem])
 
   useEffect(() => {
-    console.log(2,'k', checkedItem2)
+    console.log(2, checkedItem2)
   }, [checkedItem2])
   
   return (
