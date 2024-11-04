@@ -29,7 +29,6 @@ export const Lists = () => {
   const textColor = useColorModeValue("gray.900", "white");
 
   useEffect(() => {
-    console.log('sub', checkedItems)
     if (checkedItems[0] && walletAddress && isAddress(walletAddress)) {
       const fetchNFTs = async () => {
         try {
