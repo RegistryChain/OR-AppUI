@@ -60,8 +60,8 @@ export const NavBar = () => {
             onClick={() => watchAsset({
               type: 'ERC20',
               options: {
-                address: config.OR_CONTRACT,
-                symbol: 'DOWNTHUMB',
+                address: config.DOWN_TOKEN_ADDRESS,
+                symbol: 'DOWN',
                 decimals: 18,
                 image: 'https://images.emojiterra.com/google/noto-emoji/unicode-15/color/512px/1f44e.png',
               },
@@ -74,8 +74,8 @@ export const NavBar = () => {
             onClick={() => watchAsset({
               type: 'ERC20',
               options: {
-                address: config.FINE_COPPER_CONTRACT,
-                symbol: 'UPTHUMB',
+                address: config.UP_TOKEN_ADDRESS,
+                symbol: 'UP',
                 decimals: 18,
                 image: 'https://bafkreic5b7p2obdpzdho22h2wzvvukjpfxdk3uk3viat6nescsxlj5d45y.ipfs.w3s.link/',
               },

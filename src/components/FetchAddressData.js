@@ -10,22 +10,20 @@ export const etherscanData = async (address, setAddressData) => {
     const response = await axios.get(
         `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=${etherscanApiKey}`
       );
-      setAddressData(prevData => ({
-        ...prevData,
-        ethereumHistory: response.data?.result
-      }));
+
+        return response.data?.result
   } catch (error) {
       console.error('Error fetching Etherscan data:', error);
   }
 };
 
-export const binanceAttestation = async (address, setAddressData) => {
+export const binanceAttestation = async (address) => {
     const bscClient = 
         createPublicClient({
           chain: bsc,
           transport: http('https://bsc-dataseed.binance.org'), // Use the appropriate BSC node URL
         })
-        
+
     try {
       const babtContract = getContract({
         address: '0x2b09d47d550061f995a3b5c6f0fd58005215d7c8',
@@ -37,17 +35,35 @@ export const binanceAttestation = async (address, setAddressData) => {
       if (Number(hasBalance) > 0) {
         result = await babtContract.read.tokenIdOf([address]);
       }
-      setAddressData(prevData => ({
-        ...prevData,
-        binanceAttestation: result
-      }));
+      return result
+
     } catch (error) {
       console.error('Error fetching Binance BABT attestation:', error);
     }
   };
+  // Get full gitcoin passport queried list, map thru for the address existing and their scores
+  export const gitcoinPassportExistingScores = async () => {
+    const gitcoinApiKey = process.env.GITCOIN_API_KEY;
+    const scorerId = process.env.GITCOIN_SCORER_ID;
+    const response = await axios.get(
+      'https://api.scorer.gitcoin.co/registry/score/' + scorerId,
+      {
+        headers: {
+          'X-API-KEY': gitcoinApiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
-  // Function to fetch Gitcoin Passport score
+    return response.data.items
+  }
+
+
+
+  // Function to fetch Gitcoin Passport score, if not in existing list
   export const gitcoinPassportScore = async (address, setAddressData) => {
+
+
     try {
       const gitcoinApiKey = process.env.GITCOIN_API_KEY;
       const scorerId = process.env.GITCOIN_SCORER_ID;
@@ -64,10 +80,8 @@ export const binanceAttestation = async (address, setAddressData) => {
           },
         }
       );
-      setAddressData(prevData => ({
-        ...prevData,
-        gitcoinPassportScore: response.data
-      }));
+      return response.data
+      
     } catch (error) {
       console.error('Error fetching Gitcoin Passport score:', error);
     }

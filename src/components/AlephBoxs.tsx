@@ -13,15 +13,15 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import useReadOnlySBTContract from "@/contracts/useReadOnlySBTContract";
-import useVoteUP from "@/hooks/useVoteUP";
-import useVoteDown from "@/hooks/useVoteDown";
+// import useVoteUP from "@/hooks/useVoteUP";
+// import useVoteDown from "@/hooks/useVoteDown";
 import { ethers, isAddress } from "ethers"; // Import ethers to convert to Wei
 
 export const AlephBoxs = () => {
   const contract = useReadOnlySBTContract();
 
-  const { mutateAsync: voteUP } = useVoteUP();
-  const { mutateAsync: voteDown } = useVoteDown();
+  // const { mutateAsync: voteUP } = useVoteUP();
+  // const { mutateAsync: voteDown } = useVoteDown();
 
   const DisplayData = JsonData.map((info, index) => {
     const [upVotes, setUpVotes] = useState<number | null>(null);
@@ -51,9 +51,9 @@ export const AlephBoxs = () => {
             : ethers.parseEther(String(upVoteAmount));
 
           if (vote === 0) {
-            await voteDown({ to: info.EOA, value: amountInWei });
+            // await voteDown({ to: info.EOA, value: amountInWei });
           } else {
-            await voteUP({ to: info.EOA, value: amountInWei });
+            // await voteUP({ to: info.EOA, value: amountInWei });
           }
           fetchVotes(); // Update the vote counts after voting
         }

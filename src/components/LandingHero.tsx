@@ -20,10 +20,15 @@ import { motion } from "framer-motion";
 import { useWallet } from "@/context/WalletContext"; // Adjust the import path
 import useReadOnlySBTContract from "@/contracts/useReadOnlySBTContract";
 import { useCheckbox } from "@/context/CheckboxContext";
-import {gitcoinPassportScore, etherscanData, binanceAttestation} from "./FetchAddressData"
+import {gitcoinPassportScore, etherscanData, binanceAttestation, gitcoinPassportExistingScores} from "./FetchAddressData"
+import useReadOnlyDownContract from "@/contracts/useReadOnlyDownContract";
+import useReadOnlyUpContract from "@/contracts/useReadOnlyUpContract";
 
 export const LandingHero = () => {
   const contract = useReadOnlySBTContract();
+  const downContract = useReadOnlyDownContract();
+  const upContract = useReadOnlyUpContract();
+
   const { walletAddress, setWalletAddress } = useWallet();
   const [addressData, setAddressData] = useState({});
   const [upVotes, setUpVotes] = useState(0);
@@ -31,7 +36,50 @@ export const LandingHero = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const { checkedItem, checkedItem2 } = useCheckbox();
+  const { checkedItem, checkedItem2, checkedItem3 } = useCheckbox();
+
+  const checkSenders = async (target: any) => {
+
+    const senders: any = {}
+    const copyObj: any = {up: 0, down: 0, stars: 0}
+    let upScore = 0
+    try {
+      const readUpRatings: any = await upContract.getSenderRatingsListForTarget([target])
+      readUpRatings[0].forEach((address: any, idx: number) => {
+        //use address to query the interpreters, calculate a score modifer
+        upScore += Number(readUpRatings[1][idx])
+        if (!senders[address]) {
+          senders[address] = {...copyObj}
+        }
+        senders[address].up += upScore 
+  
+      })
+
+    }catch (err) {
+
+    }
+    let downScore = 0
+    try {
+      const readDownRatings: any = await downContract.getSenderRatingsListForTarget([target])
+      readDownRatings[0].forEach((address: any, idx: number) => {
+        //use address to query the interpreters, calculate a score modifer
+        downScore += Number(readDownRatings[1][idx])
+        if (!senders[address]) {
+          senders[address] = {...copyObj}
+        }
+        senders[address].down += downScore 
+      })
+
+    }catch (err) {
+      
+    }
+
+    // Organize as a JSON object of sender keys, with embedded object for the amounts sent of each token
+    // This allows for one time reference of each interpreter component per sender. Then calculate the score to be agregated by each token
+    // 
+
+    return senders
+  }
 
   const handleCheck = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -47,28 +95,86 @@ export const LandingHero = () => {
     }
 
     try {
+
       // Fetch the data from the contract
-      await etherscanData(walletAddress, setAddressData)
-      await binanceAttestation(walletAddress, setAddressData)
-      await gitcoinPassportScore(walletAddress, setAddressData)
+      const ratings = await checkSenders(walletAddress)
       
-      let down = await contract.balanceOf([walletAddress, 0]) as any;
-      let up = await contract.balanceOf([walletAddress, 1]) as any;
-      // IMPORTANT
-      if (checkedItem) {
-        // @ts-ignore
-        up = up * 2n;
-      }
+      
+      const gitcoinPassport = await gitcoinPassportExistingScores()
 
-      if (checkedItem2) {
-        // @ts-ignore
-        down = down * 20n;
-      }
+      const allPromises: any[] = []; // Array to store promises for each sender
+      const senderMap: any = {};   // Map to link sender to their respective data
+    
+      Object.keys(ratings).forEach(sender => {
+        // Initialize an object to hold data for each sender
+        const addressData: any = {};
+    
+        // Create promises for each data request
+        const etherscanPromise = etherscanData(sender).then(data => {
+          addressData.etherscan = data;
+        });
+    
+        const binancePromise = binanceAttestation(sender).then(data => {
+          addressData.binance = data;
+        });
+        
+        const existing = gitcoinPassport.find((x: any) => x.address === sender)
+        // Conditionally add Gitcoin Passport score promise if needed
+        let gitcoinPromise = Promise.resolve()
+        if (existing) {
+          addressData.gitcoin = existing
+        } else {
+          
+          gitcoinPromise = gitcoinPassportScore(sender).then(data => {
+                addressData.gitcoin = data;
+              })
+        }
+            
+        // Store promises in allPromises array along with the sender key
+        allPromises.push(
+          Promise.all([etherscanPromise, binancePromise, gitcoinPromise]).then(() => {
+            // Map the addressData to the sender after promises resolve
+            senderMap[sender] = addressData;
+          })
+        );
+      });
+    
+      // Wait for all promises to resolve
+      await Promise.all(allPromises);
+    
+      // Process data after all requests are complete
+      let down = 0;
+      let up = 0;
+    
+      Object.keys(ratings).forEach(sender => {
+        const senderRatings = ratings[sender]
+        //This is where configs affect the scoring
+        let senderMultiplier = 1
+        if (checkedItem && Number(senderMap[sender].gitcoin.score) > 2) {
+          // @ts-ignore
+          senderMultiplier += 1
+        }
 
+        if (checkedItem2 && senderMap[sender].worldCoin) {
+          senderMultiplier +=2
+        }
+        
+        if (checkedItem3 && !! Number(senderMap[sender].binance)) {
+          // @ts-ignore
+          senderMultiplier += 1
+        }
+
+        up += (senderRatings?.up || 0) * senderMultiplier;
+        down += (senderRatings?.down || 0) * senderMultiplier;
+      });
+      
       setUpVotes(up);
       setDownVotes(down);
+
     } catch (err) {
       setError('Failed to fetch data from the contract.');
+      setUpVotes(0);
+      setDownVotes(0);
     }
 
     setIsLoading(false);

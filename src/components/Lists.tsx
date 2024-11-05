@@ -20,7 +20,7 @@ export const Lists = () => {
   const [checkedItems, setCheckedItems] = React.useState([false, false, false, false, false]);
   const { walletAddress } = useWallet();
 
-  const { checkedItem, setCheckedItem, checkedItem2, setCheckedItem2 } = useCheckbox();
+  const { checkedItem, setCheckedItem, checkedItem2, setCheckedItem2, checkedItem3, setCheckedItem3 } = useCheckbox();
 
   const allChecked = checkedItems.every(Boolean);
   const isIndeterminate = checkedItems.some(Boolean) && !allChecked;
@@ -80,13 +80,19 @@ export const Lists = () => {
               </Checkbox>
               <Checkbox
                 isChecked={checkedItems1[2]}
-                onChange={(e) => setCheckedItems1([checkedItems1[0], checkedItems1[1], e.target.checked, ...checkedItems1.slice(3)])}
+                onChange={(e) => {
+                  setCheckedItem2(e.target.checked)
+                  setCheckedItems1([checkedItems1[0], checkedItems1[1], e.target.checked, ...checkedItems1.slice(3)])}
+                }
               >
                 Binance BABT
               </Checkbox>
               <Checkbox
                 isChecked={checkedItems1[3]}
-                onChange={(e) => setCheckedItems1([checkedItems1[0], checkedItems1[1], checkedItems1[2], e.target.checked, ...checkedItems1.slice(4)])}
+                onChange={(e) => {
+                  setCheckedItem3(e.target.checked)
+                  setCheckedItems1([checkedItems1[0], checkedItems1[1], checkedItems1[2], e.target.checked, ...checkedItems1.slice(4)])
+                }}
               >
                 Coinbase KYC
               </Checkbox>
@@ -150,8 +156,6 @@ export const Lists = () => {
                 e.target.checked,
                 e.target.checked,
               ])
-              setCheckedItem2(e.target.checked)
-
             }
             }
           >
