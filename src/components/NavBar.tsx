@@ -38,7 +38,7 @@ export const NavBar = () => {
             OR
           </Heading>
         </Box>
-        <Link href="/dashboard">
+        {/* <Link href="/dashboard">
           <Button
             ml={10}
             // @ts-ignore
@@ -46,7 +46,7 @@ export const NavBar = () => {
           >
             Dashboard
           </Button>
-        </Link>
+        </Link> */}
         <Spacer />
         <Flex direction={"row"}>
           <IconButton
