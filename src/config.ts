@@ -4,8 +4,9 @@ dotenv.config();
 
 export const config = {
   NODE_ENV: process.env.NODE_ENV,
-  BASIC_TOKEN_ADDRESS: "0x7dce17df45374e7812a74c193b2c148054b8bef2" as `0x${string}`,
-  DOWN_TOKEN_ADDRESS: "0xec4f1e2b9686cb94633fcd842d7b8ec30816085c" as `0x${string}`,
-  UP_TOKEN_ADDRESS: "0x37c313678cd365c19dfc23388407bc6b08f9f0a0" as `0x${string}`,
-  SBT_CONTRACT: "0x0f1d2e7566addae6712bf30b0dbc53a980859966" as `0x${string}`
+  BASIC_TOKEN_ADDRESS: "0xe9cca7712f00d3b859de1abf1ea29c2a24ff213e" as `0x${string}`,
+  DOWN_TOKEN_ADDRESS: "0x25331b3b8a38d85797c235dc9f0809070b3b177b" as `0x${string}`,
+  UP_TOKEN_ADDRESS: "0x0862af5cebdc69958bdfca81da389609eac1f17f" as `0x${string}`,
+  SCALE_TOKEN_ADDRESS: "0xd981089cea4a208bf5184ec00a578c96261edf98" as `0x${string}`,
+  SBT_CONTRACT: "0x5914180fcf4e4fd6d39062070356d7ced0713223" as `0x${string}`,
 };

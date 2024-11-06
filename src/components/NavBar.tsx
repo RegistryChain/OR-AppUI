@@ -85,6 +85,20 @@ export const NavBar = () => {
           </Button>
           <Button
             mr={5}
+            onClick={() => watchAsset({
+              type: 'ERC20',
+              options: {
+                address: config.SCALE_TOKEN_ADDRESS,
+                symbol: 'STAR',
+                decimals: 18,
+                image: 'https://images.emojiterra.com/google/noto-emoji/unicode-16.0/color/512px/2b50.png',
+              },
+            })}
+          >
+            Add STAR
+          </Button>
+          <Button
+            mr={5}
             onClick={() => faucetMint([])}
           >
             Mint Test Tokens

@@ -23,16 +23,20 @@ import { useCheckbox } from "@/context/CheckboxContext";
 import {gitcoinPassportScore, etherscanData, binanceAttestation, gitcoinPassportExistingScores} from "./FetchAddressData"
 import useReadOnlyDownContract from "@/contracts/useReadOnlyDownContract";
 import useReadOnlyUpContract from "@/contracts/useReadOnlyUpContract";
+import useReadOnlyScaleContract from "@/contracts/useReadOnlyScaleContract";
 
 export const LandingHero = () => {
   const contract = useReadOnlySBTContract();
   const downContract = useReadOnlyDownContract();
   const upContract = useReadOnlyUpContract();
+  const scaleContract = useReadOnlyScaleContract()
 
   const { walletAddress, setWalletAddress } = useWallet();
   const [addressData, setAddressData] = useState({});
   const [upVotes, setUpVotes] = useState(0);
   const [downVotes, setDownVotes] = useState(0);
+  const [scaleRating, setScaleRating] = useState(0);
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -41,7 +45,7 @@ export const LandingHero = () => {
   const checkSenders = async (target: any) => {
 
     const senders: any = {}
-    const copyObj: any = {up: 0, down: 0, stars: 0}
+    const copyObj: any = {up: 0, down: 0, scale: 0}
     let upScore = 0
     try {
       const readUpRatings: any = await upContract.getSenderRatingsListForTarget([target])
@@ -54,6 +58,7 @@ export const LandingHero = () => {
         senders[address].up += upScore 
   
       })
+      console.log(senders, upScore)
 
     }catch (err) {
 
@@ -69,6 +74,35 @@ export const LandingHero = () => {
         }
         senders[address].down += downScore 
       })
+
+    }catch (err) {
+      
+    }
+
+    let scaleScore = 0
+    try {
+      console.log('target nonce', await scaleContract.targetNonce([target]))
+      
+      const readScaleRatings: any = await scaleContract.getSenderRatingsListForTarget([target])
+      readScaleRatings[0].forEach((address: any, idx: number) => {
+        //use address to query the interpreters, calculate a score modifer
+        scaleScore += Number(readScaleRatings[1][idx])
+        
+        if (!senders[address]) {
+          senders[address] = {...copyObj}
+        }
+        //In the case that the user submit multiple reviews, round down to 5 stars for now
+        console.log('scale 1', scaleScore, address)
+        if (scaleScore > 5000000000000000000) {
+          scaleScore = 5000000000000000000
+        }
+        console.log('scale 2', scaleScore, address)
+        senders[address].scale += scaleScore 
+      })
+      // senders[address].star = senders[address].star/readScaleRatings[0].length
+      //Give the star amounts for each sender. Later after the criteria calculations do the aerage
+
+
 
     }catch (err) {
       
@@ -145,9 +179,12 @@ export const LandingHero = () => {
       // Process data after all requests are complete
       let down = 0;
       let up = 0;
-    
+      let scaleCumulative = 0;
+      let scaleCount = 0;
       Object.keys(ratings).forEach(sender => {
+        let disqualified = false
         const senderRatings = ratings[sender]
+        console.log('Sender Rating', sender, senderRatings)
         //This is where configs affect the scoring
         let senderMultiplier = 1
         if (checkedItem && Number(senderMap[sender].gitcoin.score) > 2) {
@@ -164,13 +201,17 @@ export const LandingHero = () => {
           senderMultiplier += 1
         }
 
-        up += (senderRatings?.up || 0) * senderMultiplier;
-        down += (senderRatings?.down || 0) * senderMultiplier;
+        if (!disqualified) {
+          up += (senderRatings?.up || 0) * senderMultiplier;
+          down += (senderRatings?.down || 0) * senderMultiplier;
+          scaleCumulative +=(senderRatings?.scale || 0) * senderMultiplier;
+          scaleCount += 1
+        }
       });
-      
-      setUpVotes(up);
-      setDownVotes(down);
-
+      setUpVotes(up / 10 ** 18);
+      setDownVotes(down / 10 ** 18);
+      console.log(scaleCumulative, scaleCount, scaleCumulative/scaleCount)
+      setScaleRating((scaleCumulative/scaleCount) / 10 ** 18 || 0)
     } catch (err) {
       setError('Failed to fetch data from the contract.');
       setUpVotes(0);
@@ -275,6 +316,22 @@ export const LandingHero = () => {
               />
               <Text fontSize="2xl" fontWeight="bold" color={"red.500"}>
                 {Number(downVotes)}
+              </Text>
+            </HStack>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <HStack>
+              <Image
+                src="https://images.emojiterra.com/google/noto-emoji/unicode-16.0/color/512px/2b50.png"
+                alt="Star Image"
+                boxSize="40px"
+              />
+              <Text fontSize="2xl" fontWeight="bold" color={"red.500"}>
+                {Number(scaleRating)}
               </Text>
             </HStack>
           </motion.div>
