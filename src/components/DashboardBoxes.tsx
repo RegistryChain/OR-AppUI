@@ -11,20 +11,22 @@ import {
   Text,
   Input,
   Flex,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
 import useReadOnlySBTContract from "@/contracts/useReadOnlySBTContract";
 // import useVoteUP from "@/hooks/useVoteUP";
 // import useVoteDown from "@/hooks/useVoteDown";
 import { ethers, isAddress } from "ethers"; // Import ethers to convert to Wei
-import { ThumbsUpSender } from "./ThumbsUpSender";
-import { ThumbsDownSender } from "./ThumbsDownSender";
 import { useConfig, useConnect } from "wagmi";
 import { keccak256, stringToBytes } from "viem";
+import { RatingSender } from "./RatingSender";
 
 export const DashboardBoxes = () => {
   const contract = useReadOnlySBTContract();
   // const { mutateAsync: voteUP } = useVoteUP();
   // const { mutateAsync: voteDown } = useVoteDown();
+  const [error, setError] = useState("")
 
   const DisplayData = JsonData.map((info, index) => {
     const projAddr = '0x' + (keccak256(stringToBytes(info.name))).slice(26,66)
@@ -121,11 +123,11 @@ export const DashboardBoxes = () => {
               Live
             </Badge>
 
-            <ThumbsUpSender targetAddress={projAddr} />
+            <RatingSender targetAddress={projAddr} emoji={String.fromCodePoint(0x1F44D)} errorHandler={setError} tokenKey={"UpToken"} />
             <Text fontSize="2xl" fontWeight="bold" color={"green.500"} ml={2} mr={6}>
             </Text>
 
-            <ThumbsDownSender targetAddress={projAddr} />
+            <RatingSender targetAddress={projAddr} emoji={String.fromCodePoint(0x1F44E)} errorHandler={setError} tokenKey={"DownToken"}/>
             <Text fontSize="2xl" fontWeight="bold" color={"green.500"} ml={2} mr={6}>
             </Text>
 
@@ -135,9 +137,13 @@ export const DashboardBoxes = () => {
     );
   });
 
-  return (
+return (<>
+      {error ? <Alert status="error" mb={3}>
+          <AlertIcon />
+          {error}
+        </Alert> :<div style={{height: "60px"}}></div>}
     <SimpleGrid minChildWidth="280px" spacing="40px">
       {DisplayData}
     </SimpleGrid>
-  );
+    </>);
 };

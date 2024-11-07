@@ -4,7 +4,7 @@ import useTransferRep from "@/hooks/useTransferRep";
 import { Button, GridItem } from "@chakra-ui/react"
 import { useAccount } from "wagmi";
 
-export const ThumbsUpSender = ({targetAddress}: any) => {
+export const RatingSender = ({targetAddress, tokenKey, emoji, errorHandler}: any) => {
     const { mutateAsync } = useTransferRep();
     const {address} = useAccount()
 return <Button
@@ -17,12 +17,17 @@ return <Button
     cursor="pointer"
     isLoading={false}
     onClick={async (e: any) => {
-        if (address) {
-            await mutateAsync({token: config.UpToken, to: targetAddress, value: (1 * 10**18)})      
-
+        try {
+            await mutateAsync({token: config[tokenKey], to: targetAddress, value: (1 * 10**18)})      
+        } catch (err) {
+            let msg = err.message
+            if (!address) {
+                msg = "Connect your wallet"
+            }
+            errorHandler(msg)
         }
     }}
   >
-    {String.fromCodePoint(0x1F44D)}
+    {emoji}
   </Button>
 }

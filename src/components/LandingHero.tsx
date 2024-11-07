@@ -31,8 +31,8 @@ import useReadOnlyShitContract from "@/contracts/useReadOnlyShitContract";
 import useReadOnlyHeartContract from "@/contracts/useReadOnlyHeartContract";
 import { getEnsAddress } from "viem/actions";
 import { sepolia } from "viem/chains";
-import { ThumbsDownSender } from "./ThumbsDownSender";
-import { ThumbsUpSender } from "./ThumbsUpSender";
+import Scale from "./Scale";
+import { RatingSender } from "./RatingSender";
 
 export const LandingHero = () => {
   const downContract = useReadOnlyDownContract();
@@ -41,8 +41,6 @@ export const LandingHero = () => {
   const shitContract = useReadOnlyShitContract()
   const heartContract = useReadOnlyHeartContract()
   const {address} = useAccount()
-  const { mutateAsync } = useTransferRep();
-  const { mutateAsync: faucetMint } = useMintBasic();
 
 
   const { walletAddress, setWalletAddress } = useWallet();
@@ -58,6 +56,7 @@ export const LandingHero = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [tab, setTab] = useState(1)
 
   const { checkedItem, checkedItem2, checkedItem3, checkedItem5, checkedItem6, checkedItem7 } = useCheckbox();
 
@@ -330,68 +329,12 @@ export const LandingHero = () => {
   
   if ((isAddress(walletAddress))) {
     buttons = (<>
-    <ThumbsUpSender targetAddress={walletAddress} />
-    <ThumbsDownSender targetAddress={walletAddress} />
-  <Button
-    as={GridItem}
-    w="full"
-    variant="solid"
-    colSpan={{ base: "auto", lg: 1 }}
-    size="lg"
-    colorScheme="gray"
-    cursor="pointer"
-    isLoading={false}
-    onClick={async (e: any) => {
-      const balance: any = await scaleContract.balanceOf([address])
-      if (balance > 0) {
-        await mutateAsync({token: config.StarToken, to: walletAddress, value: (4 * 10**18)})
-      } else {
-        await faucetMint([])
-      }
-    }}
-  >
-    {String.fromCodePoint(0x2B50)}
-  </Button>
-  <Button
-    as={GridItem}
-    w="full"
-    variant="solid"
-    colSpan={{ base: "auto", lg: 1 }}
-    size="lg"
-    colorScheme="gray"
-    cursor="pointer"
-    isLoading={false}
-    onClick={async (e: any) => {
-      const balance: any = await shitContract.balanceOf([address])
-      if (balance > 0) {
-        await mutateAsync({token: config.ShitToken, to: walletAddress, value: (1 * 10**18)})
-      } else {
-        await faucetMint([])
-      }
-    }}
-  >
-    {String.fromCodePoint(0x1F4A9)}
-  </Button>
-  <Button
-    as={GridItem}
-    w="full"
-    variant="solid"
-    colSpan={{ base: "auto", lg: 1 }}
-    size="lg"
-    colorScheme="gray"
-    cursor="pointer"
-    isLoading={false}
-    onClick={async (e: any) => {
-      const balance: any = await heartContract.balanceOf([address])
-      if (balance > 0) {
-        await mutateAsync({token: config.HeartToken, to: walletAddress, value: (1 * 10**18)})
-      } else {
-        await faucetMint([])
-      }
-    }}
-  >
-    {String.fromCodePoint(0x1FA77)}
-  </Button></>)
+    <RatingSender targetAddress={walletAddress} emoji={String.fromCodePoint(0x1F44D)} errorHandler={setError} tokenKey={"UpToken"} />
+    <RatingSender targetAddress={walletAddress} emoji={String.fromCodePoint(0x1F44E)} errorHandler={setError} tokenKey={"DownToken"}/>
+    <RatingSender targetAddress={walletAddress} emoji={String.fromCodePoint(0x2B50)} errorHandler={setError} tokenKey={"StarToken"} />
+    <RatingSender targetAddress={walletAddress} emoji={String.fromCodePoint(0x1F4A9)} errorHandler={setError} tokenKey={"ShitToken"} />
+    <RatingSender targetAddress={walletAddress} emoji={String.fromCodePoint(0x1FA77)} errorHandler={setError} tokenKey={"HeartToken"} />
+</>)
   } else {
     buttons = (<>
       <Button
@@ -477,6 +420,98 @@ export const LandingHero = () => {
     </>)
   }
 
+  let renderedData = null
+  if (tab === 1) {
+    renderedData = (<HStack spacing={8} justifyContent="center" mb={5}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <HStack>
+          <span style={{fontSize: "40px"}}>{String.fromCodePoint(0x1F44D)}</span>
+          <Text fontSize="2xl" fontWeight="bold" color={"green.500"}>
+            {Number(upVotes)}
+          </Text>
+        </HStack>
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <HStack>
+          <span style={{fontSize: "40px"}}>{String.fromCodePoint(0x1F44E)}</span>
+          <Text fontSize="2xl" fontWeight="bold" color={"red.500"}>
+            {Number(downVotes)}
+          </Text>
+        </HStack>
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <HStack>
+
+        <span style={{fontSize: "40px"}}>{String.fromCodePoint(0x2B50)}</span>
+          <Text fontSize="2xl" fontWeight="bold" color={"red.500"}>
+            {Number(scaleRating)}
+          </Text>
+        </HStack>
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <HStack>
+          <span style={{fontSize: "40px"}}>{String.fromCodePoint(0x1F4A9)}</span>
+
+          <Text fontSize="2xl" fontWeight="bold" color={"red.500"}>
+            {Number(shitVotes)}
+          </Text>
+        </HStack>
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <HStack>
+          <span style={{fontSize: "40px"}}>{String.fromCodePoint(0x1FA77)}</span>
+          <Text fontSize="2xl" fontWeight="bold" color={"red.500"}>
+            {Number(heartVotes)}
+          </Text>
+        </HStack>
+      </motion.div>
+    </HStack>)
+  } else if (tab === 2) {
+    const negative = Number(shitVotes) + Number(downVotes)
+    const positive = Number(heartVotes) + Number(upVotes)
+    renderedData = (<HStack spacing={8} justifyContent="center" mb={5}>
+      <span style={{fontSize: "50px", color: "green", paddingRight: "20px"}} color={"green.500"}>
+        +{positive}
+      </span>
+      <span style={{fontSize: "50px", color: "red"}} color={"red.500"}>
+        -{negative}
+      </span>
+    </HStack>)
+  } else if (tab === 3) {
+    // const negative = Number(shitVotes) + Number(downVotes)
+    // const positive = Number(heartVotes) + Number(upVotes)
+    const negative = 30
+    const positive = 29
+    const total = negative + positive
+    
+    renderedData = (<HStack spacing={8} justifyContent="center" mb={5}>
+      <div style={{width: "200px"}}>
+
+      <Scale value={positive} totalCount={total} />
+      </div>
+    </HStack>)
+  }
+
   return (
     <Stack
       px={8}
@@ -537,79 +572,20 @@ export const LandingHero = () => {
         </Alert>
       )}
 
-      {!isLoading && !error && (
-        <HStack spacing={8} justifyContent="center" mb={5}>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <HStack>
-              <span style={{fontSize: "40px"}}>{String.fromCodePoint(0x1F44D)}</span>
-              <Text fontSize="2xl" fontWeight="bold" color={"green.500"}>
-                {Number(upVotes)}
-              </Text>
-            </HStack>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <HStack>
-              <span style={{fontSize: "40px"}}>{String.fromCodePoint(0x1F44E)}</span>
-              <Text fontSize="2xl" fontWeight="bold" color={"red.500"}>
-                {Number(downVotes)}
-              </Text>
-            </HStack>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <HStack>
+      {!isLoading && !error &&  (renderedData)}
 
-            <span style={{fontSize: "40px"}}>{String.fromCodePoint(0x2B50)}</span>
-              <Text fontSize="2xl" fontWeight="bold" color={"red.500"}>
-                {Number(scaleRating)}
-              </Text>
-            </HStack>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <HStack>
-              <span style={{fontSize: "40px"}}>{String.fromCodePoint(0x1F4A9)}</span>
-
-              <Text fontSize="2xl" fontWeight="bold" color={"red.500"}>
-                {Number(shitVotes)}
-              </Text>
-            </HStack>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <HStack>
-              <span style={{fontSize: "40px"}}>{String.fromCodePoint(0x1FA77)}</span>
-              <Text fontSize="2xl" fontWeight="bold" color={"red.500"}>
-                {Number(heartVotes)}
-              </Text>
-            </HStack>
-          </motion.div>
-        </HStack>
-      )}
 
       {isLoading && (
         <Box textAlign="center" mb={1}>
           <Spinner size="xl" />
         </Box>
       )}
-
+      <div>
+      {walletAddress && Number(shitVotes) + Number(downVotes) + Number(heartVotes) + Number(upVotes) + Number(scaleRating) + "" ? <div><div style={{marginLeft: "30%", width: "20px", display: "flex", textAlign: "center", marginRight: "36px", cursor: "pointer"}}>
+        <Box onClick={() => setTab(1)} style={tab === 1 ? {backgroundColor: "grey", padding: "4px 6px"}: {padding: "4px 6px"}}>1</Box>
+        <Box onClick={() => setTab(2)} style={tab === 2 ? {backgroundColor: "grey", padding: "4px 6px"}: {padding: "4px 6px"}}>2</Box>
+        <Box onClick={() => setTab(3)} style={tab === 3 ? {backgroundColor: "grey", padding: "4px 6px"}: {padding: "4px 6px"}}>3</Box>
+      </div></div>: null}
       <SimpleGrid
         as="form"
         w={{ base: "full", md: 7 / 12 }}
@@ -648,6 +624,7 @@ export const LandingHero = () => {
         {buttons}
         
       </SimpleGrid>
+      </div>
 
     </Stack>
   );

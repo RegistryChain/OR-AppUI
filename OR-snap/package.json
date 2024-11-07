@@ -1,6 +1,6 @@
 {
   "name": "or-snap",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "description": "Transaction level address reviews",
   "repository": {
     "type": "git",

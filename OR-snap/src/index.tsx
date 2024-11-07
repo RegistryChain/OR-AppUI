@@ -3,12 +3,12 @@
 import { Box, Text, Bold, Image } from '@metamask/snaps-sdk/jsx';
 
 const tokenContracts = {
-  "StarToken": "0xe830d110ca834f85e9f6d2a68f5dad29cafae429",
-  "DownToken": "0xf7904e43ddc725c7c54e064a1d7d39864e4d3179",
-  "UpToken": "0x6e054657c7436146f9b661a33f5883fc18bee27a",
-  "ShitToken": "0xd3103d45c314d51eb0a960f7935e4d93bf7c944e",
-  "HeartToken": "0xcf6ad9a40da988ed014d3d58a9d6fcf25b84700b",
-  "TokenController": "0x61f27ed5a040001d887136a25b3c066c5e56782f"
+  "StarToken": "0x7e6671dbaf5e54f01c6da871addbc3595e325fdd",
+  "DownToken": "0x0d8076c8bdc7ee3ae047d5d4be8b337e0ad455c7",
+  "UpToken": "0xb0c330cd6028af6598d3aa15246fd944d6c94b94",
+  "ShitToken": "0x7e0550e29c1417223e2f71cfa4eebf5c169f74f6",
+  "HeartToken": "0x95769cfd70474a7e68a1931ab21c0cbccf5519b8",
+  "TokenController": "0xe084bc03c99a41172a02cd7b4549fc39ccdf5806"
 }
 
 export const onTransaction: any = async ({

@@ -21,6 +21,7 @@ export const connectSnap = async (
   snapId: string = (process.env.SNAP_ID || "npm:or-snap"),
   params: Record<'version' | string, unknown> = {},
 ) => {
+
   const win: any = window
   await win.ethereum.request({
     method: 'wallet_requestSnaps',
@@ -48,18 +49,6 @@ export const getSnap = async (version?: string): Promise<any> => {
     console.log('Failed to obtain installed snap', e);
     return undefined;
   }
-};
-
-/**
- * Invoke the "signAd" method from the example snap.
- */
-
-export const signAd = async () => {
-  const win: any = window
-  await win.ethereum.request({
-    method: 'wallet_invokeSnap',
-    params: { snapId: (process.env.SNAP_ID || "npm:or-snap"), request: { method: 'hello' } },
-  });
 };
 
 export const isLocalSnap = (snapId: string) => snapId.startsWith('local:');
