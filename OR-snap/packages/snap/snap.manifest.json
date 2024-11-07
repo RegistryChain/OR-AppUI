@@ -1,18 +1,18 @@
 {
-  "version": "0.1",
+  "version": "0.1.0",
   "description": "Transaction level address reviews",
-  "proposedName": "OR-immo",
+  "proposedName": "or-snap",
   "repository": {
     "type": "git",
-    "url": "https://github.com/RegistryChain/OR-IMMO/OR.git"
+    "url": "https://github.com/RegistryChain/OR-AppUI/tree/main/OR-snap.git"
   },
   "source": {
-    "shasum": "liHnIrQuXauoHwrZ1oiIrB/8nkD+q5LfIebw7ejJG+U=",
+    "shasum": "TMpcZWXNXuvavoUdij/hA+ush1tfuEPQCuliiXMIH/0=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
         "iconPath": "images/icon.svg",
-        "packageName": "OR-immo",
+        "packageName": "or-snap",
         "registry": "https://registry.npmjs.org/"
       }
     }

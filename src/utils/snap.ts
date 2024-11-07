@@ -18,7 +18,7 @@ export const getSnaps = async () => {
  * @param params - The params to pass with the snap to connect.
  */
 export const connectSnap = async (
-  snapId: string = (process.env.SNAP_ID || "npm:OR-IMMO"),
+  snapId: string = (process.env.SNAP_ID || "npm:or-immo"),
   params: Record<'version' | string, unknown> = {},
 ) => {
   const win: any = window
@@ -42,7 +42,7 @@ export const getSnap = async (version?: string): Promise<any> => {
 
     return Object.values(snaps).find(
       (snap: any) =>
-        snap.id === (process.env.SNAP_ID || "npm:OR-IMMO") && (!version || snap.version === version),
+        snap.id === (process.env.SNAP_ID || "npm:or-immo") && (!version || snap.version === version),
     );
   } catch (e) {
     console.log('Failed to obtain installed snap', e);
@@ -58,7 +58,7 @@ export const signAd = async () => {
   const win: any = window
   await win.ethereum.request({
     method: 'wallet_invokeSnap',
-    params: { snapId: (process.env.SNAP_ID || "npm:OR-IMMO"), request: { method: 'hello' } },
+    params: { snapId: (process.env.SNAP_ID || "npm:or-immo"), request: { method: 'hello' } },
   });
 };
 
