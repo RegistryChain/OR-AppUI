@@ -1,13 +1,13 @@
 {
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Transaction level address reviews",
   "proposedName": "or-snap",
   "repository": {
     "type": "git",
-    "url": "https://github.com/RegistryChain/OR-AppUI/tree/main/OR-snap.git"
+    "url": "https://github.com/RegistryChain/OR-AppUI/tree/main/OR-snap"
   },
   "source": {
-    "shasum": "TMpcZWXNXuvavoUdij/hA+ush1tfuEPQCuliiXMIH/0=",
+    "shasum": "MOFPxgkEqkb66P7yeuNtcmNn+Bwk9RlZPPA8w5lRLgE=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
