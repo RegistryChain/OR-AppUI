@@ -1,11 +1,10 @@
-import type { SnapConfig } from '@metamask/snaps-cli';
 import { resolve } from 'path';
 
-const config: SnapConfig = {
+const config: any = {
   bundler: 'webpack',
   input: resolve(__dirname, 'src/index.tsx'),
   server: {
-    port: 8080,
+    port: 89080,
   },
   polyfills: {
     buffer: true,
