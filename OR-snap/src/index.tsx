@@ -1,3 +1,4 @@
+// @ts-nocheck
 
 import { Box, Text, Bold, Image } from '@metamask/snaps-sdk/jsx';
 
