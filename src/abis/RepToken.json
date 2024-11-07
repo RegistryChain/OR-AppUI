@@ -2,9 +2,19 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_basicToken",
-        "type": "address"
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "symbol",
+        "type": "string"
+      },
+      {
+        "internalType": "bool",
+        "name": "_scaled",
+        "type": "bool"
       }
     ],
     "stateMutability": "nonpayable",
@@ -12,17 +22,7 @@
   },
   {
     "inputs": [],
-    "name": "ReputationToken__NotBasicToken",
-    "type": "error"
-  },
-  {
-    "inputs": [],
     "name": "ReputationToken__SBTAlreadySet",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "UpToken__TransferValueTooLow",
     "type": "error"
   },
   {

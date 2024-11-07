@@ -1,0 +1,33 @@
+{
+  "version": "0.1",
+  "description": "Transaction level address reviews",
+  "proposedName": "OR-immo",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RegistryChain/OR-IMMO/OR.git"
+  },
+  "source": {
+    "shasum": "liHnIrQuXauoHwrZ1oiIrB/8nkD+q5LfIebw7ejJG+U=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "iconPath": "images/icon.svg",
+        "packageName": "OR-immo",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    "snap_dialog": {},
+    "endowment:transaction-insight": {
+      "allowTransactionOrigin": true
+    },
+    "endowment:ethereum-provider": {},
+    "endowment:network-access": {},
+    "endowment:rpc": {
+      "dapps": true,
+      "snaps": true
+    }
+  },
+  "manifestVersion": "0.1"
+}

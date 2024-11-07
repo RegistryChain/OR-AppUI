@@ -15,7 +15,7 @@ import {
   Image,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { isAddress } from "viem";
+import { createPublicClient, http, isAddress, keccak256, stringToBytes } from "viem";
 import { motion } from "framer-motion";
 import { useWallet } from "@/context/WalletContext"; // Adjust the import path
 import useReadOnlySBTContract from "@/contracts/useReadOnlySBTContract";
@@ -23,29 +23,79 @@ import { useCheckbox } from "@/context/CheckboxContext";
 import {gitcoinPassportScore, etherscanData, binanceAttestation, gitcoinPassportExistingScores} from "./FetchAddressData"
 import useReadOnlyDownContract from "@/contracts/useReadOnlyDownContract";
 import useReadOnlyUpContract from "@/contracts/useReadOnlyUpContract";
-import useReadOnlyScaleContract from "@/contracts/useReadOnlyScaleContract";
+import useReadOnlyScaleContract from "@/contracts/useReadOnlyStarContract";
+import useTransferRep from "@/hooks/useTransferRep";
+import { config } from "@/config";
+import useMintBasic from "@/hooks/useMintBasic";
+import { useAccount } from "wagmi";
+import useReadOnlyShitContract from "@/contracts/useReadOnlyShitContract";
+import useReadOnlyHeartContract from "@/contracts/useReadOnlyHeartContract";
+import { getEnsAddress } from "viem/actions";
+import { sepolia } from "viem/chains";
 
 export const LandingHero = () => {
-  const contract = useReadOnlySBTContract();
   const downContract = useReadOnlyDownContract();
   const upContract = useReadOnlyUpContract();
   const scaleContract = useReadOnlyScaleContract()
+  const shitContract = useReadOnlyShitContract()
+  const heartContract = useReadOnlyHeartContract()
+  const {address} = useAccount()
+  const { mutateAsync } = useTransferRep();
+  const { mutateAsync: faucetMint } = useMintBasic();
+
 
   const { walletAddress, setWalletAddress } = useWallet();
+  const [inputValue, setInputValue ] = useState("");
+
+
   const [addressData, setAddressData] = useState({});
   const [upVotes, setUpVotes] = useState(0);
   const [downVotes, setDownVotes] = useState(0);
   const [scaleRating, setScaleRating] = useState(0);
+  const [shitVotes, setShitVotes] = useState(0);
+  const [heartVotes, setHeartVotes] = useState(0);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
   const { checkedItem, checkedItem2, checkedItem3 } = useCheckbox();
 
+  const getAddrFromEnsName = async(name) => {
+    const client = createPublicClient({
+      chain: sepolia,
+      transport: http(),
+    });
+    const address = await getEnsAddress(client, { name });
+    if (isAddress(address)) {
+      setWalletAddress(address)
+    }
+  }
+
+  useEffect(() => {
+    if (isAddress(inputValue)) {
+      setWalletAddress(inputValue)
+    } else {
+      if (inputValue.includes(".eth")) {
+        const addr = getAddrFromEnsName(inputValue)
+
+      } else if (inputValue.includes(".")) {
+        const domainHash = keccak256(stringToBytes(inputValue))
+        setWalletAddress('0x' + domainHash.slice(26, 66))
+      } else {
+        setWalletAddress("")
+      }
+    }
+
+  }, [inputValue])
+
+  useEffect(() => {
+    console.log(walletAddress, isAddress(walletAddress))
+  }, [walletAddress])
+
   const checkSenders = async (target: any) => {
 
     const senders: any = {}
-    const copyObj: any = {up: 0, down: 0, scale: 0}
+    const copyObj: any = {up: 0, down: 0, scale: 0, shit: 0, heart: 0}
     let upScore = 0
     try {
       const readUpRatings: any = await upContract.getSenderRatingsListForTarget([target])
@@ -55,11 +105,8 @@ export const LandingHero = () => {
         if (!senders[address]) {
           senders[address] = {...copyObj}
         }
-        senders[address].up += upScore 
-  
+        senders[address].up += upScore
       })
-      console.log(senders, upScore)
-
     }catch (err) {
 
     }
@@ -81,7 +128,6 @@ export const LandingHero = () => {
 
     let scaleScore = 0
     try {
-      console.log('target nonce', await scaleContract.targetNonce([target]))
       
       const readScaleRatings: any = await scaleContract.getSenderRatingsListForTarget([target])
       readScaleRatings[0].forEach((address: any, idx: number) => {
@@ -92,11 +138,9 @@ export const LandingHero = () => {
           senders[address] = {...copyObj}
         }
         //In the case that the user submit multiple reviews, round down to 5 stars for now
-        console.log('scale 1', scaleScore, address)
         if (scaleScore > 5000000000000000000) {
           scaleScore = 5000000000000000000
         }
-        console.log('scale 2', scaleScore, address)
         senders[address].scale += scaleScore 
       })
       // senders[address].star = senders[address].star/readScaleRatings[0].length
@@ -108,10 +152,37 @@ export const LandingHero = () => {
       
     }
 
-    // Organize as a JSON object of sender keys, with embedded object for the amounts sent of each token
-    // This allows for one time reference of each interpreter component per sender. Then calculate the score to be agregated by each token
-    // 
+    let shitScore = 0
+    try {
+      const readShitRatings: any = await shitContract.getSenderRatingsListForTarget([target])
+      readShitRatings[0].forEach((address: any, idx: number) => {
+        //use address to query the interpreters, calculate a score modifer
+        shitScore += Number(readShitRatings[1][idx])
+        if (!senders[address]) {
+          senders[address] = {...copyObj}
+        }
+        senders[address].shit += shitScore
+      })
+    }catch (err) {
 
+    }
+
+    let heartScore = 0
+    try {
+      const readHeartRatings: any = await heartContract.getSenderRatingsListForTarget([target])
+      readHeartRatings[0].forEach((address: any, idx: number) => {
+        //use address to query the interpreters, calculate a score modifer
+        heartScore += Number(readHeartRatings[1][idx])
+        if (!senders[address]) {
+          senders[address] = {...copyObj}
+        }
+        senders[address].heart += heartScore
+      })
+    }catch (err) {
+
+    }
+
+    
     return senders
   }
 
@@ -132,7 +203,6 @@ export const LandingHero = () => {
 
       // Fetch the data from the contract
       const ratings = await checkSenders(walletAddress)
-      
       
       const gitcoinPassport = await gitcoinPassportExistingScores()
 
@@ -179,17 +249,19 @@ export const LandingHero = () => {
       // Process data after all requests are complete
       let down = 0;
       let up = 0;
+      let shit = 0;
+      let heart = 0;
       let scaleCumulative = 0;
       let scaleCount = 0;
       Object.keys(ratings).forEach(sender => {
         let disqualified = false
         const senderRatings = ratings[sender]
-        console.log('Sender Rating', sender, senderRatings)
         //This is where configs affect the scoring
         let senderMultiplier = 1
-        if (checkedItem && Number(senderMap[sender].gitcoin.score) > 2) {
+
+        if (checkedItem && !(Number(senderMap[sender].gitcoin.score) > 0)) {
           // @ts-ignore
-          senderMultiplier += 1
+          disqualified = true
         }
 
         if (checkedItem2 && senderMap[sender].worldCoin) {
@@ -204,18 +276,24 @@ export const LandingHero = () => {
         if (!disqualified) {
           up += (senderRatings?.up || 0) * senderMultiplier;
           down += (senderRatings?.down || 0) * senderMultiplier;
-          scaleCumulative +=(senderRatings?.scale || 0) * senderMultiplier;
+          shit += (senderRatings?.shit || 0) * senderMultiplier;
+          heart +=(senderRatings?.heart || 0) * senderMultiplier;
+          scaleCumulative += (senderRatings?.scale || 0);
           scaleCount += 1
         }
       });
       setUpVotes(up / 10 ** 18);
       setDownVotes(down / 10 ** 18);
-      console.log(scaleCumulative, scaleCount, scaleCumulative/scaleCount)
+      setShitVotes(shit / 10 ** 18);
+      setHeartVotes(heart / 10 ** 18);
       setScaleRating((scaleCumulative/scaleCount) / 10 ** 18 || 0)
     } catch (err) {
       setError('Failed to fetch data from the contract.');
       setUpVotes(0);
       setDownVotes(0);
+      setScaleRating(0);
+      setHeartVotes(0);
+      setShitVotes(0);
     }
 
     setIsLoading(false);
@@ -224,6 +302,181 @@ export const LandingHero = () => {
   useEffect(() => {
     console.log(addressData)
   }, [addressData])
+
+
+  let buttons = null
+  
+  if ((isAddress(walletAddress))) {
+    buttons = (<>
+    <Button
+    as={GridItem}
+    w="full"
+    variant="solid"
+    colSpan={{ base: "auto", lg: 1 }}
+    size="lg"
+    colorScheme="gray"
+    cursor="pointer"
+    isLoading={false}
+    onClick={async (e: any) => {
+      // console.log(walletAddress)
+      const balance = await upContract.balanceOf([address])
+      if (balance > 0) {
+        await mutateAsync({token: config.UpToken, to: walletAddress, value: (5 * 10**18)})
+      // } else {
+      //   await faucetMint([])
+      }
+    }}
+  >
+    {String.fromCodePoint(0x1F44D)}
+  </Button>
+  <Button
+    as={GridItem}
+    w="full"
+    variant="solid"
+    colSpan={{ base: "auto", lg: 1 }}
+    size="lg"
+    colorScheme="gray"
+    cursor="pointer"
+    isLoading={false}
+    onClick={async (e: any) => {
+      const balance = await downContract.balanceOf([address])
+      if (balance > 0) {
+        await mutateAsync({token: config.downToken, to: walletAddress, value: (5 * 10**18)})
+      } else {
+        await faucetMint([])
+      }
+    }}
+  >
+    {String.fromCodePoint(0x1F44E)}
+  </Button>
+  <Button
+    as={GridItem}
+    w="full"
+    variant="solid"
+    colSpan={{ base: "auto", lg: 1 }}
+    size="lg"
+    colorScheme="gray"
+    cursor="pointer"
+    isLoading={false}
+    onClick={async (e: any) => {
+      const balance = await scaleContract.balanceOf([address])
+      if (balance > 0) {
+        await mutateAsync({token: config.StarToken, to: walletAddress, value: (5 * 10**18)})
+      } else {
+        await faucetMint([])
+      }
+    }}
+  >
+    {String.fromCodePoint(0x2B50)}
+  </Button>
+  <Button
+    as={GridItem}
+    w="full"
+    variant="solid"
+    colSpan={{ base: "auto", lg: 1 }}
+    size="lg"
+    colorScheme="gray"
+    cursor="pointer"
+    isLoading={false}
+    onClick={async (e: any) => {
+      const balance = await shitContract.balanceOf([address])
+      if (balance > 0) {
+        await mutateAsync({token: config.ShitToken, to: walletAddress, value: (5 * 10**18)})
+      } else {
+        await faucetMint([])
+      }
+    }}
+  >
+    {String.fromCodePoint(0x1F4A9)}
+  </Button>
+  <Button
+    as={GridItem}
+    w="full"
+    variant="solid"
+    colSpan={{ base: "auto", lg: 1 }}
+    size="lg"
+    colorScheme="gray"
+    cursor="pointer"
+    isLoading={false}
+    onClick={async (e: any) => {
+      const balance = await heartContract.balanceOf([address])
+      if (balance > 0) {
+        await mutateAsync({token: config.HeartToken, to: walletAddress, value: (5 * 10**18)})
+      } else {
+        await faucetMint([])
+      }
+    }}
+  >
+    {String.fromCodePoint(0x1FA77)}
+  </Button></>)
+  } else {
+    buttons = (<>
+      <Button
+        style={{fontSize: "14px"}}
+      as={GridItem}
+      w="full"
+      variant="solid"
+      colSpan={{ base: "auto", lg: 1 }}
+      size="lg"
+      colorScheme="gray"
+      cursor="pointer"
+      isLoading={false}
+      onClick={async (e: any) => {
+        setInputValue("google.com")
+      }}
+    >
+      google.com
+    </Button>
+    <Button
+      style={{fontSize: "14px"}}
+      as={GridItem}
+      w="full"
+      variant="solid"
+      colSpan={{ base: "auto", lg: 1 }}
+      size="lg"
+      colorScheme="gray"
+      cursor="pointer"
+      isLoading={false}
+      onClick={async (e: any) => {
+        setInputValue("vitalik.eth")
+      }}
+    >
+      vitalik.eth
+    </Button>
+    <Button
+      style={{fontSize: "14px"}}
+      as={GridItem}
+      w="full"
+      variant="solid"
+      colSpan={{ base: "auto", lg: 1 }}
+      size="lg"
+      colorScheme="gray"
+      cursor="pointer"
+      isLoading={false}
+      onClick={async (e: any) => {
+        setInputValue("uni.eth")
+      }}
+    >
+      uni.eth
+    </Button>
+    <Button
+      style={{fontSize: "14px"}}
+      as={GridItem}
+      w="full"
+      variant="solid"
+      colSpan={{ base: "auto", lg: 1 }}
+      size="lg"
+      colorScheme="gray"
+      cursor="pointer"
+      isLoading={false}
+      onClick={async (e: any) => {
+        setInputValue("usa.gov")
+      }}
+    >
+      usa.gov
+    </Button>
+    </>)
+  }
 
   return (
     <Stack
@@ -293,11 +546,7 @@ export const LandingHero = () => {
             transition={{ duration: 0.5 }}
           >
             <HStack>
-              <Image
-                src="https://bafkreic5b7p2obdpzdho22h2wzvvukjpfxdk3uk3viat6nescsxlj5d45y.ipfs.w3s.link/"
-                alt="Upvote Image"
-                boxSize="40px"
-              />
+              <span style={{fontSize: "40px"}}>{String.fromCodePoint(0x1F44D)}</span>
               <Text fontSize="2xl" fontWeight="bold" color={"green.500"}>
                 {Number(upVotes)}
               </Text>
@@ -309,11 +558,7 @@ export const LandingHero = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <HStack>
-              <Image
-                src="https://images.emojiterra.com/google/noto-emoji/unicode-15/color/512px/1f44e.png"
-                alt="Downvote Image"
-                boxSize="40px"
-              />
+              <span style={{fontSize: "40px"}}>{String.fromCodePoint(0x1F44E)}</span>
               <Text fontSize="2xl" fontWeight="bold" color={"red.500"}>
                 {Number(downVotes)}
               </Text>
@@ -325,13 +570,35 @@ export const LandingHero = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <HStack>
-              <Image
-                src="https://images.emojiterra.com/google/noto-emoji/unicode-16.0/color/512px/2b50.png"
-                alt="Star Image"
-                boxSize="40px"
-              />
+
+            <span style={{fontSize: "40px"}}>{String.fromCodePoint(0x2B50)}</span>
               <Text fontSize="2xl" fontWeight="bold" color={"red.500"}>
                 {Number(scaleRating)}
+              </Text>
+            </HStack>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <HStack>
+              <span style={{fontSize: "40px"}}>{String.fromCodePoint(0x1F4A9)}</span>
+
+              <Text fontSize="2xl" fontWeight="bold" color={"red.500"}>
+                {Number(shitVotes)}
+              </Text>
+            </HStack>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <HStack>
+              <span style={{fontSize: "40px"}}>{String.fromCodePoint(0x1FA77)}</span>
+              <Text fontSize="2xl" fontWeight="bold" color={"red.500"}>
+                {Number(heartVotes)}
               </Text>
             </HStack>
           </motion.div>
@@ -359,9 +626,9 @@ export const LandingHero = () => {
             mt={0}
             size="lg"
             type="text"
-            placeholder="Search by Address, Ethereum (ENS)"
-            value={walletAddress}
-            onChange={(e) => setWalletAddress(e.target.value)} // Capture wallet address input
+            placeholder="Give an address, .eth name, or website domain (google.com)"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)} // Capture wallet address input
             required
           />
         </GridItem>
@@ -374,12 +641,15 @@ export const LandingHero = () => {
           type="submit"
           colorScheme="gray"
           cursor="pointer"
-          isLoading={isLoading}
+          isLoading={false}
           onClick={async (e: any) => await handleCheck(e)}
         >
           Check
         </Button>
+        {buttons}
+        
       </SimpleGrid>
+
     </Stack>
   );
 };

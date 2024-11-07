@@ -4,10 +4,10 @@ import RepToken from '../abis/RepToken.json';
 import { publicClient, walletClient } from '@/context/client';
 import { getContract } from 'viem';
 
-const useReadOnlyDownContract = () => {
+const useReadOnlyShitContract = () => {
   const sbtContract = useMemo(() => {
     const contract = getContract({
-      address: config.DownToken,
+      address: config.ShitToken,
       abi: RepToken,
       client: {
         public: publicClient,
@@ -20,4 +20,4 @@ const useReadOnlyDownContract = () => {
   return sbtContract;
 };
 
-export default useReadOnlyDownContract;
+export default useReadOnlyShitContract;

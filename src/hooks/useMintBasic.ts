@@ -9,7 +9,7 @@ const useMintBasic = (onError?: any) => {
     {
       mutationFn: async ({ to, value }: any) => {
         return await writeContract(wagmiConfig, {
-          address: config.BASIC_TOKEN_ADDRESS,
+          address: config.TokenController,
           abi: Basic,
           functionName: 'mintFromFaucet',
           args: []

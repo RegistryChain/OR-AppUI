@@ -1,14 +1,14 @@
 import { useMemo } from 'react';
 import { config } from '@/config';
-import UpToken from '../abis/UpToken.json';
+import RepToken from '../abis/RepToken.json';
 import { publicClient, walletClient } from '@/context/client';
 import { getContract } from 'viem';
 
-const useReadOnlyScaleContract = () => {
+const useReadOnlyHeartContract = () => {
   const sbtContract = useMemo(() => {
     const contract = getContract({
-      address: config.SCALE_TOKEN_ADDRESS,
-      abi: UpToken,
+      address: config.HeartToken,
+      abi: RepToken,
       client: {
         public: publicClient,
         wallet: walletClient,
@@ -20,4 +20,4 @@ const useReadOnlyScaleContract = () => {
   return sbtContract;
 };
 
-export default useReadOnlyScaleContract;
+export default useReadOnlyHeartContract;
