@@ -18,8 +18,9 @@ return <Button
     isLoading={false}
     onClick={async (e: any) => {
         try {
-            await mutateAsync({token: config[tokenKey], to: targetAddress, value: (1 * 10**18)})      
-        } catch (err) {
+            const con: any = config
+            await mutateAsync({token: con[tokenKey], to: targetAddress, value: (1 * 10**18)})      
+        } catch (err: any) {
             let msg = err.message
             if (!address) {
                 msg = "Connect your wallet"

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Scale = ({ value, totalCount }) => {
+const Scale = ({ value, totalCount }: any) => {
   // Calculate marker position as a percentage of totalCount
   const markerPosition = (value / totalCount) * 100;
     console.log(markerPosition)
