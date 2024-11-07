@@ -13,10 +13,12 @@ import {
 import { createWeb3Modal } from "@web3modal/wagmi/react";
 import { projectId, wagmiConfig } from "@/wagmi";
 import { config } from "@/config";
-import { useWatchAsset } from "wagmi";
+import { useAccount, useWatchAsset } from "wagmi";
 import Link from "next/link";
 import useMintBasic from "../hooks/useMintBasic";
 import InstallSnap from "./InstallSnap";
+import useReadOnlyControllerContract from "@/contracts/useReadOnlyControllerContract";
+import { useEffect, useState } from "react";
 
 createWeb3Modal({
   wagmiConfig: wagmiConfig as any,
@@ -27,8 +29,22 @@ export const NavBar = () => {
   const { toggleColorMode, colorMode } = useColorMode();
   const { watchAsset } = useWatchAsset();
   const { mutateAsync: faucetMint } = useMintBasic();
+  const controller = useReadOnlyControllerContract()
+  const {address} = useAccount()
 
-  
+  const [hasMinted, setHasMinted] = useState(false)
+
+  const getHasMinted = async () => {
+    const res: any = await controller.faucetMinted([address])
+    setHasMinted(res)
+  }
+
+  useEffect(() => {
+    if (address) {
+      console.log(address)
+      getHasMinted()
+    }
+  }, [address])
 
   return (
     <Box p={4} h="40px">
@@ -40,7 +56,7 @@ export const NavBar = () => {
             OR
           </Heading>
         </Box>
-        {/* <Link href="/dashboard">
+        <Link href="/dashboard">
           <Button
             ml={10}
             // @ts-ignore
@@ -48,7 +64,7 @@ export const NavBar = () => {
           >
             Dashboard
           </Button>
-        </Link> */}
+        </Link>
         <Spacer />
         <Flex direction={"row"}>
           <IconButton
@@ -57,8 +73,8 @@ export const NavBar = () => {
             aria-label="Toggle color mode"
             icon={colorMode === "dark" ? <SunIcon /> : <MoonIcon />}
           />
-          <Button
-            mr={5}
+          {hasMinted ? (<><Button
+            mr={3}
             onClick={() => watchAsset({
               type: 'ERC20',
               options: {
@@ -69,10 +85,10 @@ export const NavBar = () => {
               },
             })}
           >
-            Add {String.fromCodePoint(0x1F4A9)}
+            + {String.fromCodePoint(0x1F4A9)}
           </Button>
           <Button
-            mr={5}
+            mr={3}
             onClick={() => watchAsset({
               type: 'ERC20',
               options: {
@@ -83,12 +99,12 @@ export const NavBar = () => {
               },
             })}
           >
-            Add {String.fromCodePoint(0x1FA77)}
+            + {String.fromCodePoint(0x1FA77)}
           </Button>
           
 
           <Button
-            mr={5}
+            mr={3}
             onClick={() => watchAsset({
               type: 'ERC20',
               options: {
@@ -99,10 +115,10 @@ export const NavBar = () => {
               },
             })}
           >
-            Add {String.fromCodePoint(0x1F44E)}
+            + {String.fromCodePoint(0x1F44E)}
           </Button>
           <Button
-            mr={5}
+            mr={3}
             onClick={() => watchAsset({
               type: 'ERC20',
               options: {
@@ -113,10 +129,10 @@ export const NavBar = () => {
               },
             })}
           >
-            Add {String.fromCodePoint(0x1F44D)}
+            + {String.fromCodePoint(0x1F44D)}
           </Button>
           <Button
-            mr={5}
+            mr={3}
             onClick={() => watchAsset({
               type: 'ERC20',
               options: {
@@ -127,14 +143,19 @@ export const NavBar = () => {
               },
             })}
           >
-            Add {String.fromCodePoint(0x2B50)}
+            + {String.fromCodePoint(0x2B50)}
           </Button>
+          </>):
           <Button
-            mr={5}
-            onClick={() => faucetMint([])}
+            mr={3}
+            onClick={async () => {
+              await faucetMint([])
+              setHasMinted(true)
+            }}
           >
             Mint Test Tokens
-          </Button>
+          </Button>}
+
           <InstallSnap displayManualInstall={true}/>
           <Box style={{marginLeft: "8px"}}>
             <w3m-button />

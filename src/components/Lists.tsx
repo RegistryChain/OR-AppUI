@@ -20,7 +20,7 @@ export const Lists = () => {
   const [checkedItems, setCheckedItems] = React.useState([false, false, false, false, false]);
   const { walletAddress } = useWallet();
 
-  const { checkedItem, setCheckedItem, checkedItem2, setCheckedItem2, checkedItem3, setCheckedItem3 } = useCheckbox();
+  const { checkedItem, setCheckedItem, checkedItem2, setCheckedItem2, checkedItem3, setCheckedItem3, checkedItem4, setCheckedItem4, checkedItem5, setCheckedItem5, checkedItem6, setCheckedItem6, checkedItem7, setCheckedItem7, checkedItem8, setCheckedItem8, checkedItem9, setCheckedItem9, checkedItem10, setCheckedItem10 } = useCheckbox();
 
   const allChecked = checkedItems.every(Boolean);
   const isIndeterminate = checkedItems.some(Boolean) && !allChecked;
@@ -108,35 +108,40 @@ export const Lists = () => {
           <Stack pl={6} mt={1} spacing={3}>
             <Checkbox
               isChecked={checkedItems2[0]}
-              onChange={(e) => setCheckedItems2([e.target.checked, ...checkedItems2.slice(1)])}
+              onChange={(e) => {
+                setCheckedItem5(e.target.checked)
+                setCheckedItems2([e.target.checked, ...checkedItems2.slice(1)])
+
+              }}
             >
-              5 NFT
+              Current ETH balance
             </Checkbox>
             <Checkbox
             isChecked={checkedItems2[1]}
-            onChange={(e) => setCheckedItems2([checkedItems2[0], e.target.checked, checkedItems2[2], checkedItems2[3], ...checkedItems2.slice(4)])}
+            onChange={(e) => {
+              setCheckedItem6(e.target.checked)
+              setCheckedItems2([checkedItems2[0], e.target.checked, checkedItems2[2], checkedItems2[3], ...checkedItems2.slice(4)])}
+            }
 
             >
               100 transactions
             </Checkbox>
             <Checkbox
               isChecked={checkedItems2[2]}
-              onChange={(e) => setCheckedItems2([checkedItems2[0], checkedItems2[1], e.target.checked, checkedItems2[3], ...checkedItems2.slice(4)])}
+              onChange={(e) => {
+                setCheckedItem7(e.target.checked)
+                setCheckedItems2([checkedItems2[0], checkedItems2[1], e.target.checked, checkedItems2[3], ...checkedItems2.slice(4)])}
+              }
             >
-              0.25 ETH on gas
+              1000 days old transactions
             </Checkbox>
             <Checkbox
               isChecked={checkedItems2[3]}
               onChange={(e) => setCheckedItems2([checkedItems2[0], checkedItems2[1], checkedItems2[2], e.target.checked, ...checkedItems2.slice(4)])}
-            >
-              at least 1 Snapshot
+              >
+              0.25 ETH on gas
             </Checkbox>
-            <Checkbox
-              isChecked={checkedItems2[4]}
-              onChange={(e) => setCheckedItems2([checkedItems2[0], checkedItems2[1], checkedItems2[2], checkedItems2[3], e.target.checked, ...checkedItems2.slice(5)])}
-            >
-              1000 days old transactions
-            </Checkbox>
+
           </Stack>
         </GridItem>
 
@@ -146,6 +151,7 @@ export const Lists = () => {
             My Circle
           </Text>
           <Checkbox
+            disabled={true}
             isChecked={allChecked}
             isIndeterminate={isIndeterminate}
             onChange={(e) =>{
@@ -163,6 +169,7 @@ export const Lists = () => {
           </Checkbox>
           <Stack pl={6} mt={1} spacing={3}>
             <Checkbox
+              disabled={true}
               isChecked={checkedItems[1]}
               onChange={(e) =>
                 setCheckedItems([checkedItems[0], checkedItems[1], checkedItems[2], checkedItems[3], checkedItems[4]])
@@ -171,6 +178,7 @@ export const Lists = () => {
               CryptoPunks
             </Checkbox>
             <Checkbox
+              disabled={true}
               isChecked={checkedItems[2]}
               onChange={(e) =>
                 setCheckedItems([checkedItems[0], checkedItems[1], e.target.checked, checkedItems[3], checkedItems[4]])
@@ -179,6 +187,7 @@ export const Lists = () => {
               BAYC
             </Checkbox>
             <Checkbox
+              disabled={true}
               isChecked={checkedItems[3]}
               onChange={(e) =>
                 setCheckedItems([checkedItems[0], checkedItems[1], checkedItems[2], e.target.checked, checkedItems[4]])
@@ -187,6 +196,7 @@ export const Lists = () => {
               Nouns
             </Checkbox>
             <Checkbox
+              disabled={true}
               isChecked={checkedItems[4]}
               onChange={(e) =>
                 setCheckedItems([checkedItems[0], checkedItems[1], checkedItems[2], checkedItems[3], e.target.checked])
@@ -195,6 +205,7 @@ export const Lists = () => {
               ENS
             </Checkbox>
             <Checkbox
+              disabled={true}
               isChecked={checkedItems[4]}
               onChange={(e) =>
                 setCheckedItems([checkedItems[0], checkedItems[1], checkedItems[2], checkedItems[3], e.target.checked])

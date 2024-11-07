@@ -5,18 +5,18 @@ import {
   Divider,
 } from "@chakra-ui/react";
 
-import { AlephBoxs } from "@/components/AlephBoxs";
+import { DashboardBoxes } from "@/components/DashboardBoxes";
 import Footer from "@/components/Footer";
 import { NavBar2 } from "@/components/NavBar2";
 import { Providers } from "@/app/providers";
 
-const dashboard = () => {
+const Dashboard = () => {
   return (
     <Providers>
       <VStack spacing={4} align="stretch">
         <NavBar2 />
         <Divider />
-        <AlephBoxs />
+        <DashboardBoxes />
         <Divider />
         <Footer />
       </VStack>
@@ -24,4 +24,4 @@ const dashboard = () => {
   );
 };
 
-export default dashboard;
+export default Dashboard;

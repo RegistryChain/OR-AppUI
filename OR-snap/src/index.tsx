@@ -167,8 +167,9 @@ export const onTransaction: any = async ({
       senders[address].scale = Number(scale.vals[idx]) 
   })
 
-  scaleScore = scaleScore/nonGcPpScaleCount
-
+  if (nonGcPpScaleCount > 0) {
+    scaleScore = scaleScore/nonGcPpScaleCount
+  }
   
   let gcPpUp = 0
   let gcPpDown = 0
@@ -225,7 +226,6 @@ export const onTransaction: any = async ({
           <Text>{String.fromCodePoint(0x2B50)} <Bold>{scaleScore/10 **18 + ""}</Bold></Text>
           <Text>{String.fromCodePoint(0x1FA77)} <Bold>{heartScore/10 **18 + ""}</Bold></Text>
           <Text>{String.fromCodePoint(0x1F4A9)} <Bold>{shitScore/10 **18 + ""}</Bold></Text>
-          <Text>{JSON.stringify(senders)}</Text>
         </Box>
         </>) as any
     }

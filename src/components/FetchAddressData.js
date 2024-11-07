@@ -4,17 +4,40 @@ import {  bsc } from 'wagmi/chains';
 
 
   
-export const etherscanData = async (address, setAddressData) => {
+export const etherscanTransactions = async (address) => {
     try {
     const etherscanApiKey = process.env.ETHERSCAN_API_KEY;
     const response = await axios.get(
         `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=${etherscanApiKey}`
       );
-
+      console.log(address, response.data?.result)
         return response.data?.result
   } catch (error) {
       console.error('Error fetching Etherscan data:', error);
   }
+};
+
+export const etherBalancesCurrent = async (addressList) => {
+  try {
+  const etherscanApiKey = process.env.ETHERSCAN_API_KEY;
+  const response = await axios.get(
+      `https://api.etherscan.io/api?module=account&action=balanceMulti&address=${addressList.join(',')}&startblock=0&endblock=99999999&sort=asc&apikey=${etherscanApiKey}`
+    );
+
+    if (response.data.status === '1' && response.data.result) {
+      // Process the result into an object with addresses as keys and balances as values
+      const balances = {};
+      response.data.result.forEach(entry => {
+        balances[entry.account] = entry.balance;
+      });
+      return balances;
+    } else {
+      console.error('Error fetching balances:', response.data.message);
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching Etherscan data:', error);
+}
 };
 
 export const binanceAttestation = async (address) => {

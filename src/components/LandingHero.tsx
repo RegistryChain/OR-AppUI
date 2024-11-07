@@ -19,7 +19,7 @@ import { createPublicClient, http, isAddress, keccak256, stringToBytes } from "v
 import { motion } from "framer-motion";
 import { useWallet } from "@/context/WalletContext"; // Adjust the import path
 import { useCheckbox } from "@/context/CheckboxContext";
-import {gitcoinPassportScore, etherscanData, binanceAttestation, gitcoinPassportExistingScores} from "./FetchAddressData"
+import {gitcoinPassportScore, etherscanTransactions, binanceAttestation, gitcoinPassportExistingScores, etherBalancesCurrent} from "./FetchAddressData"
 import useReadOnlyDownContract from "@/contracts/useReadOnlyDownContract";
 import useReadOnlyUpContract from "@/contracts/useReadOnlyUpContract";
 import useReadOnlyScaleContract from "@/contracts/useReadOnlyStarContract";
@@ -31,6 +31,8 @@ import useReadOnlyShitContract from "@/contracts/useReadOnlyShitContract";
 import useReadOnlyHeartContract from "@/contracts/useReadOnlyHeartContract";
 import { getEnsAddress } from "viem/actions";
 import { sepolia } from "viem/chains";
+import { ThumbsDownSender } from "./ThumbsDownSender";
+import { ThumbsUpSender } from "./ThumbsUpSender";
 
 export const LandingHero = () => {
   const downContract = useReadOnlyDownContract();
@@ -57,7 +59,7 @@ export const LandingHero = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const { checkedItem, checkedItem2, checkedItem3 } = useCheckbox();
+  const { checkedItem, checkedItem2, checkedItem3, checkedItem5, checkedItem6, checkedItem7 } = useCheckbox();
 
   const getAddrFromEnsName = async(name: any) => {
     const client = createPublicClient({
@@ -75,10 +77,13 @@ export const LandingHero = () => {
       setWalletAddress(inputValue)
     } else {
       if (inputValue.includes(".eth")) {
-        const addr = getAddrFromEnsName(inputValue)
-
+        const addr: any = getAddrFromEnsName(inputValue)
+        if (isAddress(addr)) {
+          setWalletAddress(addr)
+        }
       } else if (inputValue.includes(".")) {
-        const domainHash = keccak256(stringToBytes(inputValue))
+        let name = inputValue.split("https://").join("").split("http://").join("")
+        const domainHash = keccak256(stringToBytes(name))
         setWalletAddress('0x' + domainHash.slice(26, 66))
       } else {
         setWalletAddress("")
@@ -205,6 +210,8 @@ export const LandingHero = () => {
       
       const gitcoinPassport = await gitcoinPassportExistingScores()
 
+      const currentEtherBalances: any = await etherBalancesCurrent(Object.keys(ratings))
+
       const allPromises: any[] = []; // Array to store promises for each sender
       const senderMap: any = {};   // Map to link sender to their respective data
     
@@ -213,7 +220,7 @@ export const LandingHero = () => {
         const addressData: any = {};
     
         // Create promises for each data request
-        const etherscanPromise = etherscanData(sender).then(data => {
+        const etherscanPromise = etherscanTransactions(sender).then(data => {
           addressData.etherscan = data;
         });
     
@@ -244,7 +251,7 @@ export const LandingHero = () => {
     
       // Wait for all promises to resolve
       await Promise.all(allPromises);
-    
+
       // Process data after all requests are complete
       let down = 0;
       let up = 0;
@@ -270,6 +277,22 @@ export const LandingHero = () => {
         if (checkedItem3 && !! Number(senderMap[sender].binance)) {
           // @ts-ignore
           senderMultiplier += 1
+        }
+
+        if (checkedItem5 && !(currentEtherBalances[sender] > 0)) {
+          disqualified = true
+        }
+
+        if (checkedItem6 && !(senderMap[sender].etherscan.length >= 100)) {
+          disqualified = true
+        }
+        if (senderMap[sender].etherscan.length > 0) {
+          const oldestTxTs = Number(senderMap[sender].etherscan[0].timeStamp)
+          if (checkedItem7 && !(Date.now()/1000 - oldestTxTs  >= 86400000)) {
+            disqualified = true
+          }
+        } else {
+          disqualified = true
         }
 
         if (!disqualified) {
@@ -307,48 +330,8 @@ export const LandingHero = () => {
   
   if ((isAddress(walletAddress))) {
     buttons = (<>
-    <Button
-    as={GridItem}
-    w="full"
-    variant="solid"
-    colSpan={{ base: "auto", lg: 1 }}
-    size="lg"
-    colorScheme="gray"
-    cursor="pointer"
-    isLoading={false}
-    onClick={async (e: any) => {
-      // console.log(walletAddress)
-      const balance: any = await upContract.balanceOf([address])
-      if (balance > 0) {
-        await mutateAsync({token: config.UpToken, to: walletAddress, value: (5 * 10**18)})
-      } else {
-        await faucetMint([])
-      }
-    }}
-  >
-    {String.fromCodePoint(0x1F44D)}
-  </Button>
-  <Button
-    as={GridItem}
-    w="full"
-    variant="solid"
-    colSpan={{ base: "auto", lg: 1 }}
-    size="lg"
-    colorScheme="gray"
-    cursor="pointer"
-    isLoading={false}
-    onClick={async (e: any) => {
-      const balance: any = await downContract.balanceOf([address])
-      if (balance > 0) {
-        const addresses: any = config
-        await mutateAsync({token: addresses.downToken, to: walletAddress, value: (5 * 10**18)})
-      } else {
-        await faucetMint([])
-      }
-    }}
-  >
-    {String.fromCodePoint(0x1F44E)}
-  </Button>
+    <ThumbsUpSender targetAddress={walletAddress} />
+    <ThumbsDownSender targetAddress={walletAddress} />
   <Button
     as={GridItem}
     w="full"
@@ -361,7 +344,7 @@ export const LandingHero = () => {
     onClick={async (e: any) => {
       const balance: any = await scaleContract.balanceOf([address])
       if (balance > 0) {
-        await mutateAsync({token: config.StarToken, to: walletAddress, value: (5 * 10**18)})
+        await mutateAsync({token: config.StarToken, to: walletAddress, value: (4 * 10**18)})
       } else {
         await faucetMint([])
       }
@@ -381,7 +364,7 @@ export const LandingHero = () => {
     onClick={async (e: any) => {
       const balance: any = await shitContract.balanceOf([address])
       if (balance > 0) {
-        await mutateAsync({token: config.ShitToken, to: walletAddress, value: (5 * 10**18)})
+        await mutateAsync({token: config.ShitToken, to: walletAddress, value: (1 * 10**18)})
       } else {
         await faucetMint([])
       }
@@ -401,7 +384,7 @@ export const LandingHero = () => {
     onClick={async (e: any) => {
       const balance: any = await heartContract.balanceOf([address])
       if (balance > 0) {
-        await mutateAsync({token: config.HeartToken, to: walletAddress, value: (5 * 10**18)})
+        await mutateAsync({token: config.HeartToken, to: walletAddress, value: (1 * 10**18)})
       } else {
         await faucetMint([])
       }
@@ -454,10 +437,10 @@ export const LandingHero = () => {
       cursor="pointer"
       isLoading={false}
       onClick={async (e: any) => {
-        setInputValue("uni.eth")
+        setInputValue("0x0219DB862b2b48969Df880BCd134e192Fd306bfA")
       }}
     >
-      uni.eth
+      0x02...6bfA
     </Button>
     <Button
       style={{fontSize: "14px"}}
@@ -474,6 +457,22 @@ export const LandingHero = () => {
       }}
     >
       usa.gov
+    </Button>
+    <Button
+      style={{fontSize: "14px"}}
+      as={GridItem}
+      w="full"
+      variant="solid"
+      colSpan={{ base: "auto", lg: 1 }}
+      size="lg"
+      colorScheme="gray"
+      cursor="pointer"
+      isLoading={false}
+      onClick={async (e: any) => {
+        setInputValue("x.com/elonmusk")
+      }}
+    >
+      <svg fill="#000000" height="20" viewBox="0 0 32 32" width="20" xmlns="http://www.w3.org/2000/svg"><path d="m18.7232 13.9327 9.8352-11.4327h-2.3307l-8.5399 9.9268-6.8208-9.9268h-7.867l10.3144 15.0111-10.3144 11.9889h2.33077l9.01843-10.4831 7.2032 10.4831h7.867l-10.6968-15.5673zm-3.1924 3.7107-1.045-1.4948-8.31523-11.89403h3.57993l6.7105 9.59883 1.045 1.4948 8.7228 12.477h-3.5799l-7.1181-10.1813z"></path></svg>@elonmusk
     </Button>
     </>)
   }
