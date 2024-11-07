@@ -1,6 +1,4 @@
-// @ts-nocheck
 
-import type { OnRpcRequestHandler, OnTransactionHandler } from '@metamask/snaps-sdk';
 import { Box, Text, Bold, Image } from '@metamask/snaps-sdk/jsx';
 
 const tokenContracts = {
@@ -12,7 +10,7 @@ const tokenContracts = {
   "TokenController": "0x61f27ed5a040001d887136a25b3c066c5e56782f"
 }
 
-export const onTransaction: OnTransactionHandler = async ({
+export const onTransaction: any = async ({
   transaction,
   chainId,
   transactionOrigin,
