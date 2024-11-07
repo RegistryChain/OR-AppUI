@@ -1,49 +1,7 @@
+// @ts-nocheck
+
 import type { OnRpcRequestHandler, OnTransactionHandler } from '@metamask/snaps-sdk';
 import { Box, Text, Bold, Image } from '@metamask/snaps-sdk/jsx';
-
-/**
- * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
- *
- * @param args - The request handler args as object.
- * @param args.origin - The origin of the request, e.g., the website that
- * invoked the snap.
- * @param args.request - A validated JSON-RPC request object.
- * @returns The result of `snap_dialog`.
- * @throws If the request method is not valid for this snap.
- */
-// export const onRpcRequest: OnRpcRequestHandler = async ({
-//   origin,
-//   request,
-// }) => {
-//   switch (request.method) {
-
-//     //LOGIC HERE?
-
-//     case 'hello':
-//       return snap.request({
-//         method: 'snap_dialog',
-//         params: {
-//           type: 'confirmation',
-//           content: (
-//             <Box>
-//               <Text>
-//                 Hello, <Bold>{origin}</Bold>!
-//               </Text>
-//               <Text>
-//                 This custom confirmation is just for display purposes.
-//               </Text>
-//               <Text>
-//                 But you can edit the snap source code to make it do something,
-//                 if you want to!
-//               </Text>
-//             </Box>
-//           ),
-//         },
-//       });
-//     default:
-//       throw new Error('Method not found.');
-//   }
-// };
 
 const tokenContracts = {
   "StarToken": "0xe830d110ca834f85e9f6d2a68f5dad29cafae429",
@@ -60,7 +18,7 @@ export const onTransaction: OnTransactionHandler = async ({
   transactionOrigin,
 }) => {
   const includePassport0 = true // This factor changes whether or not we should include ratings from users with no passport score
-  let gitcoinPassport = []
+  let gitcoinPassport: any[] = []
   if (includePassport0) {
     gitcoinPassport = await gitcoinPassportExistingScores()
   }
@@ -77,7 +35,7 @@ export const onTransaction: OnTransactionHandler = async ({
 
   const methodSelector = "0xb879e026"; // Correct 4-byte function selector
   // Pad the address to 32 bytes
-  const paddedAddress = targetAddress.slice(2).padStart(64, '0'); // IMPORTANT - TX.TO IF ITS NOT transfer/transferFrom
+  const paddedAddress: any = targetAddress.slice(2).padStart(64, '0'); // IMPORTANT - TX.TO IF ITS NOT transfer/transferFrom
   const methodArg = methodSelector + paddedAddress;
 
   const upTokens = await ethereum.request({
@@ -132,13 +90,12 @@ export const onTransaction: OnTransactionHandler = async ({
     }, null]
   })
 
-  const senders = {}
+  const senders: any = {}
   const copyObj: any = {up: 0, down: 0, scale: 0, shit: 0, heart: 0}
 
   const up = decodeTuple(upTokens)
   let upScore = 0
   const upAddrs = up.addresses
-  let upVis = null
   upAddrs.forEach((address, idx) => {
       //use address to query the interpreters, calculate a score modifer
       up.vals[idx]
@@ -150,12 +107,9 @@ export const onTransaction: OnTransactionHandler = async ({
 
   })
 
-  
-
   const down = decodeTuple(downTokens)
   let downScore = 0
   const downAddrs = down.addresses
-  let downVis = null
   downAddrs.forEach((address, idx) => {
       //use address to query the interpreters, calculate a score modifer
       down.vals[idx]
@@ -164,9 +118,7 @@ export const onTransaction: OnTransactionHandler = async ({
         senders[address] = {...copyObj}
       }
       senders[address].down += downScore 
-
   })
-
 
   const heart = decodeTuple(heartTokens)
   let heartScore = 0
@@ -256,7 +208,7 @@ export const onTransaction: OnTransactionHandler = async ({
   }
 
   return {
-      content: (
+      content: (<>
         <Box>
           <Text><Bold>
             Ratings given to this address by addresses with a Gitcoin passport score:
@@ -276,19 +228,19 @@ export const onTransaction: OnTransactionHandler = async ({
           <Text>{String.fromCodePoint(0x1F4A9)} <Bold>{shitScore/10 **18 + ""}</Bold></Text>
           <Text>{JSON.stringify(senders)}</Text>
         </Box>
-      )
+        </>) as any
     }
 };
 
 
-function decodeTuple(encodedData) {
+function decodeTuple(encodedData: any) {
   // Remove '0x' prefix if present
   if (encodedData.startsWith("0x")) {
     encodedData = encodedData.slice(2);
   }
 
   // Helper function to parse 32-byte chunks
-  function getBytes(data, start, length = 64) {
+  function getBytes(data: any, start: any, length = 64) {
     return data.slice(start, start + length);
   }
 
@@ -353,7 +305,7 @@ export const gitcoinPassportExistingScores = async () => {
 };
 
 // Function to fetch Gitcoin Passport score for a specific address
-export const gitcoinPassportScore = async (address) => {
+export const gitcoinPassportScore = async (address: any) => {
   
   const scorerId = "8195"
   const gitcoinApiKey =  "LvYOPkBN.En8SN25VOyLOfDrpWo3xZkjgrrhVAIvZ"

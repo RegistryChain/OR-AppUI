@@ -18,7 +18,6 @@ import { useEffect, useState } from "react";
 import { createPublicClient, http, isAddress, keccak256, stringToBytes } from "viem";
 import { motion } from "framer-motion";
 import { useWallet } from "@/context/WalletContext"; // Adjust the import path
-import useReadOnlySBTContract from "@/contracts/useReadOnlySBTContract";
 import { useCheckbox } from "@/context/CheckboxContext";
 import {gitcoinPassportScore, etherscanData, binanceAttestation, gitcoinPassportExistingScores} from "./FetchAddressData"
 import useReadOnlyDownContract from "@/contracts/useReadOnlyDownContract";
@@ -60,12 +59,12 @@ export const LandingHero = () => {
 
   const { checkedItem, checkedItem2, checkedItem3 } = useCheckbox();
 
-  const getAddrFromEnsName = async(name) => {
+  const getAddrFromEnsName = async(name: any) => {
     const client = createPublicClient({
       chain: sepolia,
       transport: http(),
     });
-    const address = await getEnsAddress(client, { name });
+    const address: any = await getEnsAddress(client, { name });
     if (isAddress(address)) {
       setWalletAddress(address)
     }
@@ -319,11 +318,11 @@ export const LandingHero = () => {
     isLoading={false}
     onClick={async (e: any) => {
       // console.log(walletAddress)
-      const balance = await upContract.balanceOf([address])
+      const balance: any = await upContract.balanceOf([address])
       if (balance > 0) {
         await mutateAsync({token: config.UpToken, to: walletAddress, value: (5 * 10**18)})
-      // } else {
-      //   await faucetMint([])
+      } else {
+        await faucetMint([])
       }
     }}
   >
@@ -339,9 +338,10 @@ export const LandingHero = () => {
     cursor="pointer"
     isLoading={false}
     onClick={async (e: any) => {
-      const balance = await downContract.balanceOf([address])
+      const balance: any = await downContract.balanceOf([address])
       if (balance > 0) {
-        await mutateAsync({token: config.downToken, to: walletAddress, value: (5 * 10**18)})
+        const addresses: any = config
+        await mutateAsync({token: addresses.downToken, to: walletAddress, value: (5 * 10**18)})
       } else {
         await faucetMint([])
       }
@@ -359,7 +359,7 @@ export const LandingHero = () => {
     cursor="pointer"
     isLoading={false}
     onClick={async (e: any) => {
-      const balance = await scaleContract.balanceOf([address])
+      const balance: any = await scaleContract.balanceOf([address])
       if (balance > 0) {
         await mutateAsync({token: config.StarToken, to: walletAddress, value: (5 * 10**18)})
       } else {
@@ -379,7 +379,7 @@ export const LandingHero = () => {
     cursor="pointer"
     isLoading={false}
     onClick={async (e: any) => {
-      const balance = await shitContract.balanceOf([address])
+      const balance: any = await shitContract.balanceOf([address])
       if (balance > 0) {
         await mutateAsync({token: config.ShitToken, to: walletAddress, value: (5 * 10**18)})
       } else {
@@ -399,7 +399,7 @@ export const LandingHero = () => {
     cursor="pointer"
     isLoading={false}
     onClick={async (e: any) => {
-      const balance = await heartContract.balanceOf([address])
+      const balance: any = await heartContract.balanceOf([address])
       if (balance > 0) {
         await mutateAsync({token: config.HeartToken, to: walletAddress, value: (5 * 10**18)})
       } else {

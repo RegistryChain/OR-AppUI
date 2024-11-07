@@ -6,10 +6,10 @@ import { background, Button } from '@chakra-ui/react'
 
 export function InstallSnap({ displayManualInstall }: any) {
     const [isFlaskBool, setIsFlaskBool] = useState<Boolean>(false)
-
+    const win: any = window
     useEffect(() => {
-        if (!window?.ethereum?.isConnected()) {
-            window?.ethereum?.enable()
+        if (!win?.ethereum?.isConnected()) {
+            win?.ethereum?.enable()
         }
         if (!displayManualInstall) {
             installOrSnap()
@@ -43,7 +43,7 @@ export function InstallSnap({ displayManualInstall }: any) {
     let button = null;
     if (displayManualInstall) {
         button = 
-            <Button   disabled={window.ethereum.networkVersion + "" !== "11155111" + "" || !isFlaskBool} onClick={installOrSnap}>
+            <Button   disabled={win.ethereum.networkVersion + "" !== "11155111" + "" || !isFlaskBool} onClick={installOrSnap}>
                 OR Snap {String.fromCodePoint(0x1F98A)}
             </Button>
     }

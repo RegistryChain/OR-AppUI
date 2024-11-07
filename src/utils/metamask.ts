@@ -4,7 +4,8 @@
  * @returns True if the MetaMask version is Flask, false otherwise.
  */
 export const isFlask = async () => {
-  const provider = window.ethereum;
+  const win: any = window
+  const provider: any = win.ethereum;
 
   try {
     const clientVersion = await provider?.request({

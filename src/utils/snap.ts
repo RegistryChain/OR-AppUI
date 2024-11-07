@@ -1,14 +1,14 @@
-import { GetSnapsResponse, Snap } from '../types';
 
 /**
  * Get the installed snaps in MetaMask.
  *
  * @returns The snaps installed in MetaMask.
  */
-export const getSnaps = async (): Promise<GetSnapsResponse> => {
-  return (await window.ethereum.request({
+export const getSnaps = async () => {
+  const win: any = window
+  return (await win.ethereum.request({
     method: 'wallet_getSnaps',
-  })) as unknown as GetSnapsResponse;
+  })) as any;
 };
 
 /**
@@ -21,7 +21,8 @@ export const connectSnap = async (
   snapId: string = (process.env.SNAP_ID || "npm:OR-IMMO"),
   params: Record<'version' | string, unknown> = {},
 ) => {
-  await window.ethereum.request({
+  const win: any = window
+  await win.ethereum.request({
     method: 'wallet_requestSnaps',
     params: {
       [snapId]: params,
@@ -35,12 +36,12 @@ export const connectSnap = async (
  * @param version - The version of the snap to install (optional).
  * @returns The snap object returned by the extension.
  */
-export const getSnap = async (version?: string): Promise<Snap | undefined> => {
+export const getSnap = async (version?: string): Promise<any> => {
   try {
     const snaps = await getSnaps();
 
     return Object.values(snaps).find(
-      (snap) =>
+      (snap: any) =>
         snap.id === (process.env.SNAP_ID || "npm:OR-IMMO") && (!version || snap.version === version),
     );
   } catch (e) {
@@ -54,7 +55,8 @@ export const getSnap = async (version?: string): Promise<Snap | undefined> => {
  */
 
 export const signAd = async () => {
-  await window.ethereum.request({
+  const win: any = window
+  await win.ethereum.request({
     method: 'wallet_invokeSnap',
     params: { snapId: (process.env.SNAP_ID || "npm:OR-IMMO"), request: { method: 'hello' } },
   });
