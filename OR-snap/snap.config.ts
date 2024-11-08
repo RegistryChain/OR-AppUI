@@ -2,9 +2,9 @@ import { resolve } from 'path';
 
 const config: any = {
   bundler: 'webpack',
-  input: resolve(__dirname, 'src/index.tsx'),
+  input: resolve(__dirname, './src/index.tsx'),
   server: {
-    port: 89080,
+    port: 8080,
   },
   polyfills: {
     buffer: true,

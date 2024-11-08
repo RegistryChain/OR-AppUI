@@ -26,7 +26,7 @@ import useReadOnlyScaleContract from "@/contracts/useReadOnlyStarContract";
 import useTransferRep from "@/hooks/useTransferRep";
 import { config } from "@/config";
 import useMintBasic from "@/hooks/useMintBasic";
-import { useAccount } from "wagmi";
+import { cookieToInitialState, useAccount } from "wagmi";
 import useReadOnlyShitContract from "@/contracts/useReadOnlyShitContract";
 import useReadOnlyHeartContract from "@/contracts/useReadOnlyHeartContract";
 import { getEnsAddress } from "viem/actions";
@@ -99,30 +99,26 @@ export const LandingHero = () => {
 
     const senders: any = {}
     const copyObj: any = {up: 0, down: 0, scale: 0, shit: 0, heart: 0}
-    let upScore = 0
     try {
       const readUpRatings: any = await upContract.getSenderRatingsListForTarget([target])
       readUpRatings[0].forEach((address: any, idx: number) => {
         //use address to query the interpreters, calculate a score modifer
-        upScore += Number(readUpRatings[1][idx])
         if (!senders[address]) {
           senders[address] = {...copyObj}
         }
-        senders[address].up += upScore
+        senders[address].up += Number(readUpRatings[1][idx])
       })
     }catch (err) {
 
     }
-    let downScore = 0
     try {
       const readDownRatings: any = await downContract.getSenderRatingsListForTarget([target])
       readDownRatings[0].forEach((address: any, idx: number) => {
         //use address to query the interpreters, calculate a score modifer
-        downScore += Number(readDownRatings[1][idx])
         if (!senders[address]) {
           senders[address] = {...copyObj}
         }
-        senders[address].down += downScore 
+        senders[address].down += Number(readDownRatings[1][idx]) 
       })
 
     }catch (err) {
@@ -155,12 +151,11 @@ export const LandingHero = () => {
       
     }
 
-    let shitScore = 0
     try {
       const readShitRatings: any = await shitContract.getSenderRatingsListForTarget([target])
       readShitRatings[0].forEach((address: any, idx: number) => {
         //use address to query the interpreters, calculate a score modifer
-        shitScore += Number(readShitRatings[1][idx])
+        let shitScore = Number(readShitRatings[1][idx])
         if (!senders[address]) {
           senders[address] = {...copyObj}
         }
@@ -170,12 +165,11 @@ export const LandingHero = () => {
 
     }
 
-    let heartScore = 0
     try {
       const readHeartRatings: any = await heartContract.getSenderRatingsListForTarget([target])
       readHeartRatings[0].forEach((address: any, idx: number) => {
         //use address to query the interpreters, calculate a score modifer
-        heartScore += Number(readHeartRatings[1][idx])
+        let heartScore = Number(readHeartRatings[1][idx])
         if (!senders[address]) {
           senders[address] = {...copyObj}
         }
@@ -263,37 +257,39 @@ export const LandingHero = () => {
         const senderRatings = ratings[sender]
         //This is where configs affect the scoring
         let senderMultiplier = 1
-
+        
         if (checkedItem && !(Number(senderMap[sender].gitcoin.score) > 0)) {
           // @ts-ignore
           disqualified = true
         }
-
+        
         if (checkedItem2 && senderMap[sender].worldCoin) {
-          senderMultiplier +=2
+          // senderMultiplier +=2
         }
         
         if (checkedItem3 && !! Number(senderMap[sender].binance)) {
           // @ts-ignore
-          senderMultiplier += 1
+          // senderMultiplier += 1
         }
-
+        
         if (checkedItem5 && !(currentEtherBalances[sender] > 0)) {
           disqualified = true
         }
-
+        
         if (checkedItem6 && !(senderMap[sender].etherscan.length >= 100)) {
           disqualified = true
         }
-        if (senderMap[sender].etherscan.length > 0) {
-          const oldestTxTs = Number(senderMap[sender].etherscan[0].timeStamp)
-          if (checkedItem7 && !(Date.now()/1000 - oldestTxTs  >= 86400000)) {
+        if (checkedItem7) {
+          if (senderMap[sender].etherscan.length > 0) {
+            const oldestTxTs = Number(senderMap[sender].etherscan[0].timeStamp)
+            if (!(Date.now()/1000 - oldestTxTs  >= 86400000)) {
+              disqualified = true
+            }
+          } else {
             disqualified = true
           }
-        } else {
-          disqualified = true
         }
-
+        
         if (!disqualified) {
           up += (senderRatings?.up || 0) * senderMultiplier;
           down += (senderRatings?.down || 0) * senderMultiplier;
@@ -498,10 +494,10 @@ export const LandingHero = () => {
       </span>
     </HStack>)
   } else if (tab === 3) {
-    // const negative = Number(shitVotes) + Number(downVotes)
-    // const positive = Number(heartVotes) + Number(upVotes)
-    const negative = 30
-    const positive = 29
+    const negative = Number(shitVotes) + Number(downVotes)
+    const positive = Number(heartVotes) + Number(upVotes)
+    // const negative = 30
+    // const positive = 29
     const total = negative + positive
     
     renderedData = (<HStack spacing={8} justifyContent="center" mb={5}>
@@ -573,7 +569,6 @@ export const LandingHero = () => {
       )}
 
       {!isLoading && !error &&  (renderedData)}
-
 
       {isLoading && (
         <Box textAlign="center" mb={1}>

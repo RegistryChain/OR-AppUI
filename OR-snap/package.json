@@ -7,7 +7,7 @@
     "url": "https://github.com/RegistryChain/OR-AppUI/tree/main/OR-snap"
   },
   "license": "(MIT-0 OR Apache-2.0)",
-  "main": "src/index.ts",
+  "main": "./dist/bundle.js",
   "files": [
     "src/",
     "dist/",

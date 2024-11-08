@@ -10,7 +10,6 @@ export const etherscanTransactions = async (address) => {
     const response = await axios.get(
         `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=asc&apikey=${etherscanApiKey}`
       );
-      console.log(address, response.data?.result)
         return response.data?.result
   } catch (error) {
       console.error('Error fetching Etherscan data:', error);
