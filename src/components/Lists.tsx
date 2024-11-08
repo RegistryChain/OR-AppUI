@@ -46,7 +46,7 @@ export const Lists = () => {
   
 
   return (
-    <Box p={6} bg={bg} borderRadius="lg" boxShadow="lg">
+    <Box p={6} bg={bg}>
       <SimpleGrid
         as="form"
         w={{ base: "full", md: 7 / 12 }}

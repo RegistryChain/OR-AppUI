@@ -29,7 +29,7 @@ export const DashboardBoxes = () => {
   const [error, setError] = useState("")
 
   const DisplayData = JsonData.map((info, index) => {
-    const projAddr = '0x' + (keccak256(stringToBytes(info.name))).slice(26,66)
+    const projAddr = '0x' + (keccak256(stringToBytes(info.URL))).slice(26,66)
     const [upVotes, setUpVotes] = useState<number | null>(null);
     const [downVotes, setDownVotes] = useState<number | null>(null);
     const [upVoteAmount, setUpVoteAmount] = useState(1); // Separate state for upvote amount

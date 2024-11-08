@@ -142,10 +142,6 @@ export const LandingHero = () => {
         }
         senders[address].scale += scaleScore 
       })
-      // senders[address].star = senders[address].star/readScaleRatings[0].length
-      //Give the star amounts for each sender. Later after the criteria calculations do the aerage
-
-
 
     }catch (err) {
       
@@ -568,7 +564,6 @@ export const LandingHero = () => {
         </Alert>
       )}
 
-      {!isLoading && !error &&  (renderedData)}
 
       {isLoading && (
         <Box textAlign="center" mb={1}>
@@ -576,11 +571,29 @@ export const LandingHero = () => {
         </Box>
       )}
       <div>
-      {walletAddress && Number(shitVotes) + Number(downVotes) + Number(heartVotes) + Number(upVotes) + Number(scaleRating) + "" ? <div><div style={{marginLeft: "23%", width: "20px", display: "flex", textAlign: "center", marginRight: "36px", cursor: "pointer"}}>
-        <Box onClick={() => setTab(1)} style={tab === 1 ? {borderRadius: "4px", backgroundColor: "grey", padding: "4px 6px"}: {padding: "4px 6px"}}>1</Box>
-        <Box onClick={() => setTab(2)} style={tab === 2 ? {borderRadius: "4px", backgroundColor: "grey", padding: "4px 6px"}: {padding: "4px 6px"}}>2</Box>
-        <Box onClick={() => setTab(3)} style={tab === 3 ? {borderRadius: "4px", backgroundColor: "grey", padding: "4px 6px"}: {padding: "4px 6px"}}>3</Box>
-      </div></div>: null}
+      {walletAddress && Number(shitVotes) + Number(downVotes) + Number(heartVotes) + Number(upVotes) + Number(scaleRating) + "" ? 
+      <div>
+        <SimpleGrid
+          as="form"
+          w={{ base: "full", md: 7 / 12 }}
+          columns={{ base: 1, lg: 6 }}
+          spacing={3}
+          pt={1}
+          mx="auto"
+          mb={8}
+        >
+          <GridItem as="label" colSpan={{ base: "auto", lg: 5 }}>
+          {!isLoading && !error &&  (renderedData)}
+
+          </GridItem>
+        <GridItem colSpan={{ base: "auto", lg: 1 }} style={{cursor: "pointer"}}>
+          {isLoading ? null : <><Box onClick={() => setTab(1)} style={tab === 1 ? {borderRadius: "4px", color: "white", backgroundColor: "grey", padding: "4px 6px"}: {padding: "4px 6px"}}>Raw Data</Box>
+          <Box onClick={() => setTab(2)} style={tab === 2 ? {borderRadius: "4px", color: "white", backgroundColor: "grey", padding: "4px 6px"}: {padding: "4px 6px"}}>Sentiment</Box>
+          <Box onClick={() => setTab(3)} style={tab === 3 ? {borderRadius: "4px", color: "white", backgroundColor: "grey", padding: "4px 6px"}: {padding: "4px 6px"}}>Scale</Box></>}
+        </GridItem>
+      </SimpleGrid>
+      </div>
+      : null}
       <SimpleGrid
         as="form"
         w={{ base: "full", md: 7 / 12 }}
@@ -619,8 +632,7 @@ export const LandingHero = () => {
         {buttons}
         
       </SimpleGrid>
-      </div>
-
+    </div>
     </Stack>
   );
 };
