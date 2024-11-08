@@ -490,10 +490,10 @@ export const LandingHero = () => {
     const negative = Number(shitVotes) + Number(downVotes)
     const positive = Number(heartVotes) + Number(upVotes)
     renderedData = (<HStack spacing={8} justifyContent="center" mb={5}>
-      <span style={{fontSize: "50px", color: "green", paddingRight: "20px"}} color={"green.500"}>
+      <span style={{fontSize: "36px", color: "green", paddingRight: "20px"}} color={"green.500"}>
         +{positive}
       </span>
-      <span style={{fontSize: "50px", color: "red"}} color={"red.500"}>
+      <span style={{fontSize: "36px", color: "red"}} color={"red.500"}>
         -{negative}
       </span>
     </HStack>)
@@ -581,10 +581,10 @@ export const LandingHero = () => {
         </Box>
       )}
       <div>
-      {walletAddress && Number(shitVotes) + Number(downVotes) + Number(heartVotes) + Number(upVotes) + Number(scaleRating) + "" ? <div><div style={{marginLeft: "30%", width: "20px", display: "flex", textAlign: "center", marginRight: "36px", cursor: "pointer"}}>
-        <Box onClick={() => setTab(1)} style={tab === 1 ? {backgroundColor: "grey", padding: "4px 6px"}: {padding: "4px 6px"}}>1</Box>
-        <Box onClick={() => setTab(2)} style={tab === 2 ? {backgroundColor: "grey", padding: "4px 6px"}: {padding: "4px 6px"}}>2</Box>
-        <Box onClick={() => setTab(3)} style={tab === 3 ? {backgroundColor: "grey", padding: "4px 6px"}: {padding: "4px 6px"}}>3</Box>
+      {walletAddress && Number(shitVotes) + Number(downVotes) + Number(heartVotes) + Number(upVotes) + Number(scaleRating) + "" ? <div><div style={{marginLeft: "23%", width: "20px", display: "flex", textAlign: "center", marginRight: "36px", cursor: "pointer"}}>
+        <Box onClick={() => setTab(1)} style={tab === 1 ? {borderRadius: "4px", backgroundColor: "grey", padding: "4px 6px"}: {padding: "4px 6px"}}>1</Box>
+        <Box onClick={() => setTab(2)} style={tab === 2 ? {borderRadius: "4px", backgroundColor: "grey", padding: "4px 6px"}: {padding: "4px 6px"}}>2</Box>
+        <Box onClick={() => setTab(3)} style={tab === 3 ? {borderRadius: "4px", backgroundColor: "grey", padding: "4px 6px"}: {padding: "4px 6px"}}>3</Box>
       </div></div>: null}
       <SimpleGrid
         as="form"
