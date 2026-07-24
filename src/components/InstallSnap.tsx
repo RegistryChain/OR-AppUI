@@ -43,7 +43,7 @@ export function InstallSnap({ displayManualInstall }: any) {
     let button = null;
     if (displayManualInstall) {
         button = 
-            <Button   disabled={win.ethereum.networkVersion + "" !== "11155111" + "" || !isFlaskBool} onClick={installOrSnap}>
+            <Button   disabled={win.ethereum?.networkVersion + "" !== "11155111" + "" || !isFlaskBool} onClick={installOrSnap}>
                 OR Snap {String.fromCodePoint(0x1F98A)}
             </Button>
     }
