@@ -6,7 +6,7 @@
  */
 export const getSnaps = async () => {
   const win: any = window
-  return (await win.ethereum.request({
+  return (await win.ethereum?.request({
     method: 'wallet_getSnaps',
   })) as any;
 };
@@ -23,7 +23,7 @@ export const connectSnap = async (
 ) => {
 
   const win: any = window
-  await win.ethereum.request({
+  await win.ethereum?.request({
     method: 'wallet_requestSnaps',
     params: {
       [snapId]: params,
